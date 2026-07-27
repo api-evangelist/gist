@@ -1,7 +1,15 @@
 aid: gist
 name: Gist
-description: Gist is a company surfaced as a portfolio company of mayfield and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Gist is an AI brand-visibility and discovery platform built by ProRata (founded 2024) that
+  helps publishers and advertisers stay visible, measurable, and monetizable inside generative
+  AI experiences. It offers three products: Gist GEO (generative engine optimization for
+  consistent organic visibility in AI answers), Gist Ads (paid brand amplification placed directly
+  in AI search surfaces and premium environments), and Gist Answers (an embeddable, publisher-backed
+  AI answer engine for on-site engagement and monetization). Gist positions itself as turning AI
+  from a black box into a measurable, actionable channel for brands and content owners. Surfaced as
+  a Mayfield portfolio lead and added to the API Evangelist network; the company publishes no public
+  API or developer surface at this time.
 url: https://raw.githubusercontent.com/api-evangelist/gist/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -9,11 +17,31 @@ x-backed-by:
 - mayfield
 x-tier: stub
 x-tier-reason: portfolio-lead
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
+- Artificial Intelligence
+- Generative AI
+- Advertising
+- Marketing
+- Brand Visibility
+- Publishers
+- Search
+- Content
+image: https://gist.ai/favicon.ico
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -23,3 +51,18 @@ maintainers:
 common:
 - type: Website
   url: https://gist.ai
+- type: Blog
+  url: https://gist.ai/get-the-gist
+- type: Support
+  url: https://gist.ai/contact
+- type: PrivacyPolicy
+  url: https://gist.ai/privacy-policy
+- type: TermsOfService
+  url: https://gist.ai/terms-of-use
+- type: DomainSecurity
+  url: security/gist-domain-security.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
