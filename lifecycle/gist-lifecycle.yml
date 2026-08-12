@@ -1,0 +1,65 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  openapi/gist-answers-api-openapi.yml, https://platform.gist.ai/llms.txt,
+  https://platform.gist.ai/docs/about-gist-services, plus live probes on 2026-08-12
+note: >-
+  The lifecycle posture is thin and that is the finding. Gist ships a versioned API and a live
+  health endpoint, but publishes no changelog, no deprecation policy, no SLA and no status page.
+  No StatusPage or Deprecation pointer is emitted in apis.yml, because neither exists.
+versioning:
+  scheme: uri-path
+  current: v1
+  docs: https://platform.gist.ai/reference/get_v1-health
+  policy_url: null
+  note: >-
+    The OpenAPI's own servers block is the relative string "/v1" and every path repeats the "/v1"
+    prefix, so the published document names no host. The callable form verified on 2026-08-12 is
+    https://api.gist.ai + the path as written.
+deprecation:
+  policy_url: null
+  sunset_header: unknown
+  deprecation_header: unknown
+  note: No deprecation or sunset policy is published anywhere on gist.ai, platform.gist.ai or prorata.ai.
+deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+status_page: null
+status_page_probes:
+- {url: 'https://status.gist.ai', status: 'DNS NXDOMAIN'}
+- {url: 'https://status.prorata.ai', status: 'DNS NXDOMAIN'}
+health_endpoints:
+- url: https://api.gist.ai/v1/health
+  auth: none (public)
+  status: 200
+  probed: '2026-08-12'
+  shape: {status: string, timestamp: iso8601, uptime: seconds, services: map of dependency to status}
+  observation: >-
+    Probed live on 2026-08-12 and returned status "unhealthy": database, redis, inference,
+    publishers, questions and document reported "operational", while spotlight, fasttapir and
+    c2gen reported "failed" with the error "Organization ID is required for requests". That reads
+    as an unauthenticated-probe artefact of the health check itself rather than an outage, but it
+    is recorded as observed. A public health endpoint that self-reports "unhealthy" to every
+    anonymous caller is a real operational-transparency defect worth reporting to the provider.
+- url: https://disp-api.prorata.ai/health
+  auth: none (public)
+  status: 200
+  probed: '2026-08-12'
+  observation: >-
+    Reported "healthy" with per-dependency detail (eas_token_manager, classifier, bloom_filter,
+    rabbitmq) for the Gist Ads display service.
+changelog:
+  url: null
+  probes:
+  - {url: 'https://platform.gist.ai/changelog', status: 404}
+  - {url: 'https://gist.ai/changelog', status: 404}
+  - {url: 'https://platform.gist.ai/docs/changelog', status: 404}
+  proxy_signal: >-
+    The developer hub exposes per-page updatedAt timestamps in its markdown front matter, which is
+    the closest thing to a dated change record. Newest observed 2025-10-26 (ads-within-gist-answers),
+    oldest 2025-06-18 (prorata-ai-crawler-bot).
+documentation_freshness:
+  newest_doc_update: '2025-10-26'
+  oldest_doc_update: '2025-06-18'
+  source: updatedAt front matter on platform.gist.ai/docs/*.md

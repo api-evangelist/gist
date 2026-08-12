@@ -1,0 +1,46 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://platform.gist.ai/docs/gist-content-api,
+  https://platform.gist.ai/reference/get_v1-questions-recommended,
+  openapi/gist-answers-api-openapi.yml
+note: >-
+  Gist publishes the rate-limit RESPONSE HEADERS for the Answers API but not the numeric limits —
+  every reference page says limits are "based on your organization's settings". The one published
+  number is the Content API default. Both facts are recorded; nothing is estimated.
+headers:
+  limit: X-RateLimit-Limit
+  remaining: X-RateLimit-Remaining
+  reset: X-RateLimit-Reset
+  reset_format: Unix timestamp when the rate limit resets
+  retry_after: not documented
+exhausted:
+  status: 429
+  body: '{"error": "...", "message": "...", "statusCode": 429}'
+rate_limits:
+- scope: per-organization
+  api: Gist Answers API (Prorata API Service)
+  window: null
+  limit: null
+  burst: null
+  headers: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset]
+  status_on_exhaustion: 429
+  docs: https://platform.gist.ai/reference/get_v1-questions-recommended
+  note: >-
+    Configured per organization and not published. Applies to POST /v1/chat,
+    POST /v1/chat/completions, the chat citations/attributions/response reads, both question
+    operations, all three thread operations and both summarization operations. GET /v1/health and
+    GET / are public and declare no 429.
+- scope: per-publisher-group-api-key
+  api: Gist Content API
+  window: 1 minute
+  limit: 10
+  burst: null
+  headers: []
+  status_on_exhaustion: 429
+  docs: https://platform.gist.ai/docs/gist-content-api
+  note: >-
+    "The default rate limit is 10 requests per minute. If you need a higher rate limit, please
+    contact our support team." The ingest docs do not state which response headers are returned.
+limit_count: 2
+numeric_limits_published: 1

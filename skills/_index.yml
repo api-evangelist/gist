@@ -1,0 +1,41 @@
+generated: '2026-08-12'
+method: generated
+source: >-
+  openapi/gist-answers-api-openapi.yml and the Gist Developer Hub (platform.gist.ai). Grounded in
+  real operations only. The harvested spec declares no operationIds, so every step names
+  "METHOD /path" as published rather than an invented id.
+note: >-
+  No provider-published skills or AGENTS.md were found on gist.ai, platform.gist.ai, prorata.ai or
+  the Prorata-ai GitHub org, so these are generated. The provider does publish a real llms.txt
+  (saved verbatim in llms/), which is what these skills complement.
+skills:
+- file: gist-ask-and-attribute.md
+  name: Ask Gist Answers and read the attribution
+  api: openapi/gist-answers-api-openapi.yml
+  operations:
+  - POST /v1/chat
+  - GET /v1/chat/response/{threadId}/{turnId}
+  - GET /v1/chat/citations/{threadId}/{turnId}
+  - GET /v1/chat/attributions/{threadId}/{turnId}
+  - POST /v1/questions/related
+- file: gist-summarize-publisher-url.md
+  name: Summarize an authorized publisher URL
+  api: openapi/gist-answers-api-openapi.yml
+  operations:
+  - POST /v1/summaries
+  - GET /v1/summaries/{summaryId}
+  - GET /v1/publishers
+  - GET /v1/publishers/{id}
+- file: gist-ingest-publisher-content.md
+  name: Push publisher content into the Gist Content Network
+  api: https://platform.gist.ai/docs/gist-content-api
+  operations:
+  - POST /ingest/article
+  - POST /ingest/multiple_articles
+- file: gist-embed-answers-widget.md
+  name: Embed the Gist Answers widget on a publisher site
+  api: https://platform.gist.ai/docs/quick-start-using-widgets
+  operations:
+  - <gist-chat-widget>
+  - <gist-search-widget>
+skill_count: 4

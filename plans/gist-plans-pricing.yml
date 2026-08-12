@@ -1,0 +1,20 @@
+generated: '2026-08-12'
+method: searched
+source: https://gist.ai/, https://gist.ai/products, https://gist.ai/contact, https://platform.gist.ai/docs/about-gist-services
+note: >-
+  Gist publishes no price list, no plan tiers and no self-serve signup. https://gist.ai/pricing
+  returns 404, the sitemap contains no pricing page, and the developer hub states plainly that
+  "API keys are provided during onboarding. Contact us if you need access." The only published
+  commercial term is a revenue share, not a price.
+plans: []
+plan_count: 0
+pricing_model: contact-sales
+published_commercial_terms:
+- term: publisher revenue share
+  value: 50% of revenue on monetized traffic, shared with the publishers whose content contributed
+  scope: Gist Content Network / Gist Ads within Gist Answers
+  source: https://platform.gist.ai/docs/about-gist-services
+evidence:
+- {url: 'https://gist.ai/pricing', status: 404}
+- {url: 'https://gist.ai/sitemap.xml', status: 200, note: 42 URLs, none is a pricing page}
+- {url: 'https://gist.ai/contact', status: 200, note: contact form is the only commercial entry point}

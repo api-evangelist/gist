@@ -1,0 +1,69 @@
+generated: '2026-08-12'
+method: searched
+source: openapi/gist-answers-api-openapi.yml
+docs: https://platform.gist.ai/docs/gist-content-api
+note: >-
+  Derived from the harvested OpenAPI securityScheme, then upgraded from the developer hub, which
+  documents key issuance, the tenancy header and the two additional credential shapes the spec
+  does not cover (the widget attributes and the ad-tag publisher pair). Gist has no OAuth surface
+  at all — no oauth2 scheme in the spec, no OAuth docs, and /.well-known/openid-configuration and
+  /.well-known/oauth-authorization-server 404 on every host — so no scopes/ artifact is emitted.
+summary:
+  types: [apiKey]
+  api_key_in: [header]
+  oauth2_flows: []
+  openid_connect: false
+  mutual_tls: false
+schemes:
+- name: apiKeyAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  format: 'Bearer <api-key>'
+  description: Add your API key with the Bearer prefix (e.g., "Bearer YOUR-API-KEY")
+  sources: [openapi/gist-answers-api-openapi.yml]
+  applies_to: >-
+    14 of the 16 operations. GET /v1/health and GET / declare no security and are documented as
+    public endpoints; GET /v1/health was verified anonymously on 2026-08-12 and returned 200.
+key_issuance:
+  level: Publisher Group
+  self_serve: false
+  quote: >-
+    "A unique API key is issued at the Publisher Group level for authentication. API keys are
+    provided during onboarding. Contact us if you need access."
+  source: https://platform.gist.ai/docs/gist-content-api
+  note: >-
+    One key covers every publication inside a Publisher Group, which makes the key the tenancy
+    boundary as well as the credential. No key prefix convention, rotation policy or expiry is
+    published.
+tenancy:
+  header: X-User-ID
+  required: true
+  value: the caller's domain or organization identifier
+  applies_to: Chat, Threads, Questions and Publishers operations
+  note: >-
+    Carried alongside the API key rather than derived from it, and identical to the `user-id`
+    attribute publishers set on the gist-chat-widget / gist-search-widget elements.
+other_credential_surfaces:
+- surface: Gist Answers web components
+  credentials: [api-key, user-id]
+  transport: HTML attributes on the custom element, visible in page source
+  source: https://platform.gist.ai/docs/quick-start-using-widgets
+  note: >-
+    The widget key is embedded client-side, so it is necessarily a public/publishable credential.
+    The docs do not distinguish a public key from a secret key, though the API reference for
+    POST /v1/summaries does say the endpoint "requires a valid API key (public or secret)" —
+    implying a two-key model that is never documented.
+- surface: Gist Ads ad tag and native SDKs
+  credentials: [publisherID, publisherKey]
+  transport: >-
+    `window.prtag.defineSlot({id, api_key, url, geo}, ...)` in the browser; publisherID and
+    publisherKey parameters on GistAdControl in the iOS and Android SDKs. The search ad service at
+    tp-srch-api.prorata.ai answers every unauthenticated request with 401
+    "Publisher-ID and Publisher-Key required", so those are the header names.
+  source: https://github.com/Prorata-ai/PrtAdsSDK
+gaps:
+- No documented key rotation, expiry or revocation.
+- No documented distinction between the public and secret key hinted at in the summaries reference.
+- No scopes or permissions model; a Publisher Group key is all-or-nothing across its publications.
+- No OAuth 2.0, OIDC or mTLS option for enterprise publishers.

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contenttelemetry.org/extensions/attribution/attribution-report.json",
+  "$comment": "Extension of Content Telemetry v0.1. Canonical specification: https://contenttelemetry.org. This URI is reserved for registration; it does not resolve yet. Extension: org.contenttelemetry.attribution, version 2026-07-13. PROPOSAL DRAFT.",
+  "title": "Fractional Attribution Standalone Report",
+  "description": "Schema for standalone attribution report documents delivered outside a session document. The standalone carriage exists because attribution may be computed asynchronously, and by a different emitter than the platform - a third-party attribution provider. Modelled on the standalone event envelope (telemetry-event.json): a document_type discriminator plus session reference.",
+  "type": "object",
+  "required": ["document_type", "schema_version", "extension_version", "session_id", "reporter", "reports"],
+  "properties": {
+    "document_type": {
+      "type": "string",
+      "const": "attribution_report",
+      "description": "Document type discriminator. MUST be 'attribution_report'. Extends the delivery-format set of spec 7.1; consumers that do not support this extension ignore the document."
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1",
+      "description": "The Content Telemetry specification version this document references."
+    },
+    "extension_version": {
+      "type": "string",
+      "const": "2026-07-13",
+      "description": "Fractional attribution extension version (date string)."
+    },
+    "session_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The session whose output is attributed. REQUIRED - a report is meaningless unreferenced. Consumers join on session_id (and each report's turn_id) and MUST tolerate reports for sessions they have not yet received, exactly as they reconstruct sessions from standalone events (spec 7.1)."
+    },
+    "agent_id": {
+      "type": "string",
+      "description": "The agent that produced the attributed output (mirrors the session field; aids joining when the session document arrives late)."
+    },
+    "reporter": {
+      "$ref": "attribution-extension.json#/$defs/Reporter",
+      "description": "Who computed these reports. REQUIRED on standalone documents - the point of this carriage is that the reporter may not be the platform."
+    },
+    "reports": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "attribution-extension.json#/$defs/AttributionReport" },
+      "description": "Attribution reports, all for the session named by session_id (per-turn via each report's turn_id). Reports for different sessions MUST be delivered as separate documents, as with event batches (spec 7.1)."
+    }
+  },
+  "additionalProperties": true
+}

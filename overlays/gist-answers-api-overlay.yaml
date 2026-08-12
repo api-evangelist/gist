@@ -1,0 +1,47 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Gist Answers API (Prorata API Service)
+  version: 1.0.0
+extends: openapi/_original/gist-answers-api-openapi.json
+x-generated: '2026-08-12'
+x-method: generated
+x-source: >-
+  Captures every change API Evangelist made between the verbatim spec harvested from the ReadMe
+  API registry backing platform.gist.ai and the working copy at
+  openapi/gist-answers-api-openapi.yml. The original is never mutated.
+actions:
+- target: $.info
+  description: >-
+    Record provenance and the ownership justification for this contract. The spec is titled
+    "Prorata API Service" rather than "Gist" because ProRata is the operating company and Gist is
+    its product line; the developer hub at platform.gist.ai is served from the ReadMe project
+    "prorata" (prorata-71b06b66.readmessl.com), its llms.txt is headed "ProRata Documentation",
+    and the contact address it publishes is support@gist.ai.
+  update:
+    x-apievangelist-source: https://dash.readme.com/api/v1/api-registry/c0mok9ckmb84e34y
+    x-apievangelist-harvested: '2026-08-12'
+    x-apievangelist-provider: gist
+    x-apievangelist-ownership-verified: >-
+      GET https://api.gist.ai/v1/health returned 200 with exactly the response shape this spec
+      declares for that operation (status, timestamp, uptime, services map), on a host inside the
+      provider's own gist.ai domain.
+- target: $.servers
+  description: >-
+    REPAIR. The published document's only server is the relative string "/v1", which names no
+    host, and every path already carries a "/v1" prefix — so the spec as published is not callable
+    and double-counts the version segment. The working copy replaces it with the verified
+    production host, leaving the paths untouched.
+  update:
+  - url: https://api.gist.ai
+    description: 'Gist / ProRata API production (verified: GET https://api.gist.ai/v1/health -> 200)'
+- target: $.info
+  description: Gaps observed in the published contract, recorded for a provider conversation rather than patched.
+  update:
+    x-apievangelist-contract-gaps:
+    - No operationId on any of the 16 operations, so generated clients and agent tools have no stable identity.
+    - components.schemas is empty; every payload is inlined and no type is shared between operations.
+    - No tags[] declaration at the document root, though operations carry tag names (Chat, Threads, Questions, Publishers, Summaries, Health, Root).
+    - No examples anywhere in the document.
+    - 'GET /v1/chat/citations/{threadId}/{turnId} declares a 200 response with no properties.'
+    - No idempotency contract on the create/delete operations.
+    - No servers entry for any sandbox or staging environment, though the widget CDN and the ad tag both publish one.

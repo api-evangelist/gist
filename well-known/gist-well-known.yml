@@ -1,0 +1,75 @@
+generated: '2026-08-12'
+method: probed
+source: live GET probes of every Gist / ProRata host in apis.yml and the OpenAPI servers block
+note: >-
+  Every /.well-known/ path returned 404 on every host. Nothing was saved and NO WellKnown,
+  SecurityTxt or AgentCard pointer was emitted in apis.yml — this file records a verified
+  absence, not a surface. gist.ai and platform.gist.ai return an HTML 404 body; console.gist.ai
+  is a single-page app that answers 200 with the same HTML shell for arbitrary paths, so its
+  /.well-known/* results were checked against the returned status line rather than the body.
+  api.gist.ai's Azure Application Gateway only routes /v1/*, so any /.well-known/ path there
+  returns a 502 gateway page rather than a document.
+hosts:
+- host: https://gist.ai
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /security.txt, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://platform.gist.ai
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /llms.txt, status: 200, file: ../llms/gist-llms.txt, note: real llms.txt, saved verbatim}
+- host: https://console.gist.ai
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://api.gist.ai
+  documents:
+  - {path: /.well-known/security.txt, status: 502, note: gateway routes /v1/* only}
+  - {path: /.well-known/oauth-authorization-server, status: 502}
+  - {path: /.well-known/oauth-protected-resource, status: 502}
+  - {path: /.well-known/openid-configuration, status: 502}
+  - {path: /.well-known/api-catalog, status: 502}
+  - {path: /.well-known/agent-card.json, status: 502}
+  - {path: /.well-known/agent.json, status: 502}
+- host: https://prorata.ai
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://tp-srch-api.prorata.ai
+  documents:
+  - {path: /.well-known/agent-card.json, status: 401, note: every path on this host returns 401 "Publisher-ID and Publisher-Key required"}
+  - {path: /.well-known/agent.json, status: 401}
+  - {path: /.well-known/security.txt, status: 401}
+- host: https://disp-api.prorata.ai
+  documents:
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /.well-known/security.txt, status: 404}
+summary:
+  hosts_probed: 7
+  documents_found: 1
+  well_known_documents_found: 0
+  agent_card_found: false
+  security_txt_found: false

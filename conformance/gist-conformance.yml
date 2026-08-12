@@ -1,0 +1,83 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  openapi/gist-answers-api-openapi.yml, json-schema/gist-attribution-extension.json,
+  https://platform.gist.ai/docs/*, live probes 2026-08-12
+note: >-
+  Standards posture derived from the harvested contract and the company's own published schemas.
+  No SOC 2, ISO 27001, PCI DSS, HIPAA or FedRAMP claim was found on gist.ai, prorata.ai or the
+  developer hub, so NO Compliance pointer is emitted in apis.yml.
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: 'openapi: 3.0.0 document published through the ReadMe API registry backing platform.gist.ai'
+- id: json-schema-2020-12
+  conforms: true
+  evidence: >-
+    The three attribution schemas ProRata publishes at
+    github.com/Prorata-ai/content-telemetry-attribution declare
+    $schema https://json-schema.org/draft/2020-12/schema
+- id: content-telemetry
+  conforms: partial
+  evidence: >-
+    ProRata authored and published a proposed fractional-attribution extension to the SPUR
+    Coalition Content Telemetry standard (extension id org.contenttelemetry.attribution, version
+    2026-07-13). The repository states it is a proposal draft "Not adopted by the SPUR Coalition",
+    so this is a contribution, not a certified conformance.
+- id: sse-server-sent-events
+  conforms: true
+  evidence: >-
+    Three operations respond text/event-stream; the reference tells consumers to read
+    GET /v1/summaries/{summaryId} with EventSource.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use a vendor {error, message, statusCode} envelope, not application/problem+json.
+- id: rfc6750-bearer-token
+  conforms: partial
+  evidence: >-
+    The API key is transported in the Authorization header with the Bearer scheme, but it is a
+    static API key rather than an OAuth 2.0 access token; the OpenAPI models it as
+    type apiKey, in header, name Authorization.
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 securityScheme in the spec and no OAuth documentation.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returned 404 on every host probed.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returned 404 on gist.ai, platform.gist.ai, console.gist.ai and prorata.ai.
+- id: rfc8615-well-known
+  conforms: false
+  evidence: No /.well-known/ document is served on any host (see well-known/gist-well-known.yml).
+- id: rfc9309-robots
+  conforms: true
+  evidence: >-
+    The Gist Crawler documentation states the ProRataInc crawler respects robots.txt and other
+    exclusion protocols, publishes its user-agent string and its verifiable source IPs
+    (172.190.46.235 production, 172.171.95.51 testing).
+- id: rate-limit-headers
+  conforms: partial
+  evidence: >-
+    Uses the legacy X-RateLimit-Limit / X-RateLimit-Remaining / X-RateLimit-Reset trio, not the
+    IETF draft RateLimit / RateLimit-Policy fields.
+- id: idempotency-key
+  conforms: false
+  evidence: No idempotency key header or parameter in the spec or docs.
+- id: pagination
+  conforms: partial
+  evidence: 'Offset pagination (startAt, maxResults, total) on GET /v1/threads only.'
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document and no webhook catalog. The event surface Gist does ship is
+    server-to-client SSE, which AsyncAPI could describe but the provider does not.
+compliance_program:
+  published: false
+  certifications: []
+  trust_center: null
+  probes:
+  - {url: 'https://trust.gist.ai', status: 'DNS NXDOMAIN'}
+  - {url: 'https://gist.ai/security', status: 404}
+  - {url: 'https://gist.ai/.well-known/security.txt', status: 404}
+conforms_count: 5

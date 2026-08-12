@@ -1,0 +1,356 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contenttelemetry.org/extensions/attribution/attribution-extension.json",
+  "$comment": "Extension of Content Telemetry v0.1. Canonical specification: https://contenttelemetry.org. This URI is reserved for registration; it does not resolve yet. Extension: org.contenttelemetry.attribution, version 2026-07-13. PROPOSAL DRAFT.",
+  "title": "Fractional Attribution Extension - definitions",
+  "description": "Definitions for the fractional attribution extension: the AttributionBlock carried as an optional top-level session property, and the AttributionReport object model. Purely additive - an unmodified Content Telemetry v0.1 session schema accepts the attribution property as an unknown top-level field.",
+  "$defs": {
+    "AttributionBlock": {
+      "type": "object",
+      "description": "Optional top-level session property carrying fractional attribution reports for the session.",
+      "required": ["extension", "extension_version", "reports"],
+      "properties": {
+        "extension": {
+          "type": "string",
+          "const": "org.contenttelemetry.attribution",
+          "description": "Extension identifier (reverse-DNS)."
+        },
+        "extension_version": {
+          "type": "string",
+          "const": "2026-07-13",
+          "description": "Extension version (date string)."
+        },
+        "reports": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/AttributionReport" },
+          "description": "Attribution reports for this session, typically one per turn."
+        }
+      },
+      "additionalProperties": true
+    },
+    "AttributionReport": {
+      "type": "object",
+      "description": "A fractional attribution computation for one turn (or the whole session): the vector a = (a0, a1..an) of the case definition, where entry weights are per-source causal contribution shares and model_residual is a0.",
+      "required": ["report_id", "granularity", "estimator", "normalisation", "entries", "computed_at"],
+      "properties": {
+        "report_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for this computation. Basis for supersession and dispute reference."
+        },
+        "turn_id": {
+          "type": ["string", "null"],
+          "description": "The turn whose output this report attributes (same semantics as spec 5.2.1). Null or absent means a session-aggregate report. Emitters SHOULD report per turn."
+        },
+        "granularity": {
+          "type": "string",
+          "enum": ["answer", "span"],
+          "description": "Resolution of the report. 'span' requires the spans array; 'answer' forbids it (application rule)."
+        },
+        "estimator": { "$ref": "#/$defs/Estimator" },
+        "normalisation": {
+          "type": "string",
+          "enum": ["full", "source_only"],
+          "description": "'full': entry weights plus model_residual sum to 1 (the complete vector including a0). 'source_only': weights are renormalised over sources only and sum to 1; model_residual MUST be absent. source_only is the privacy gate for the residual - omitting the field under full normalisation would hide nothing, because a0 is derivable as 1 minus the sum of entry weights."
+        },
+        "model_residual": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "a0 - the share of the output attributed to the model's parametric knowledge rather than any provided source. REQUIRED when normalisation is 'full'; MUST be absent when 'source_only'."
+        },
+        "projection": {
+          "type": "string",
+          "description": "How raw (possibly signed) contribution estimates were mapped onto the non-negative weight vector. Open vocabulary; recommended values: 'clip_renormalise' (RECOMMENDED default - clip negative raw contributions to zero, then scale the remaining entries and residual by a common factor so the vector sums to 1), 'shift_normalise', 'absolute_share', 'none' (raw estimates were already non-negative). Consumers MUST tolerate unknown values. SHOULD be declared whenever any raw contribution was negative.",
+          "default": "clip_renormalise"
+        },
+        "entries": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/AttributionEntry" },
+          "description": "Per-source contribution shares, pre-aggregated (one entry per distinct source). MAY be empty for a fully parametric answer, in which case normalisation MUST be 'full' and model_residual MUST equal 1 (application rule)."
+        },
+        "spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/AttributionSpan" },
+          "description": "Span-level grounding map. Present if and only if granularity is 'span'."
+        },
+        "disclosure_tier": {
+          "type": "string",
+          "default": "vector_only",
+          "description": "Which rung of the disclosure ladder this report sits on. Open vocabulary, mirroring the core's open-vocabulary idiom: named values are 'vector_only' (default), 'publisher_evidence', 'audited_recomputation'; consumers MUST tolerate unknown values. Gates text-bearing fields: span_text and excerpt_text are permitted only at 'publisher_evidence' or 'audited_recomputation' - unknown tiers gate as vector_only, fail-closed (application rule A8). Deliberately not a fifth privacy_level value - the turn privacy mechanism is unchanged."
+        },
+        "computed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the attribution was computed (UTC, ISO 8601). Distinct from delivery time; supports asynchronous and third-party computation."
+        },
+        "supersedes": {
+          "type": "string",
+          "format": "uuid",
+          "description": "report_id of an earlier report that this recomputation replaces. MUST NOT equal this report's own report_id (application rule)."
+        },
+        "reporter": { "$ref": "#/$defs/Reporter" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "normalisation": { "const": "full" } },
+            "required": ["normalisation"]
+          },
+          "then": { "required": ["model_residual"] }
+        },
+        {
+          "if": {
+            "properties": { "granularity": { "const": "span" } },
+            "required": ["granularity"]
+          },
+          "then": { "required": ["spans"] }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "AttributionEntry": {
+      "type": "object",
+      "description": "One source's contribution share. Every entry MUST carry at least one of content_url or content_id (application rule, mirroring spec 5.7.5). Identifier semantics match core content events, so consumers can join entries to grounding events and resolve owners (spec 7.3).",
+      "required": ["weight"],
+      "properties": {
+        "content_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the attributed content, as on the corresponding content events."
+        },
+        "content_id": {
+          "type": "string",
+          "description": "Stable content identifier (spec 4.5), as on the corresponding content events."
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "Pins the exact version or chunk attributed. SHOULD match the content_hash of the corresponding content_grounded event."
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "The source's normalised causal contribution share (a_i). Non-negative by design: negative raw estimates are carried in raw_contribution and flagged with stance, keeping the weight a clean share of the output."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "The estimator's self-assessed reliability of this weight. Not comparable across estimator ids; calibration claims belong in the estimator's validation_ref."
+        },
+        "stance": {
+          "type": "string",
+          "enum": ["supporting", "contradicting", "unclassified"],
+          "description": "Qualitative sign of the contribution, aligned with citation_type 'contradiction' (spec 6.5). A contradicted source typically carries weight 0 with the raw estimate preserved in raw_contribution."
+        },
+        "raw_contribution": {
+          "type": "number",
+          "description": "The estimator's raw contribution value (e.g. a Shapley estimate) before projection and normalisation. Unbounded; MAY be negative. REQUIRED when stance is 'contradicting' (application rule A13); RECOMMENDED on every entry, so the signed vector travels first-class alongside the non-negative share vector."
+        }
+      },
+      "additionalProperties": true
+    },
+    "AttributionSpan": {
+      "type": "object",
+      "description": "One span of the turn's response text, mapped to the source passages that support it. Anchored by offsets and hash so the span is identifiable and verifiable without carrying text at the default disclosure tier.",
+      "required": ["span_id", "char_start", "char_end", "span_hash", "sources"],
+      "properties": {
+        "span_id": {
+          "type": "string",
+          "description": "Report-scoped span identifier."
+        },
+        "char_start": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Start offset into the turn's response_text, counted in Unicode code points."
+        },
+        "char_end": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "End offset (exclusive). MUST be greater than char_start (application rule)."
+        },
+        "span_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "SHA-256 of the span text as it appears in the response - identical semantics to excerpt_hash (spec 6.5). The default-tier anchor: integrity without disclosure."
+        },
+        "span_text": {
+          "type": "string",
+          "description": "The span text. Permitted only at disclosure_tier 'publisher_evidence' or above (application rule). When present, its SHA-256 MUST equal span_hash."
+        },
+        "span_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Token count of the span, mirroring excerpt_tokens."
+        },
+        "span_chars": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Character count of the span, mirroring excerpt_chars."
+        },
+        "model_residual": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Per-span a0 - the share of this span attributed to parametric knowledge. The per-claim grounding-risk signal."
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/SpanSource" },
+          "description": "Per-span support distribution. Within a span, source weights (plus the per-span model_residual when present) sum to 1 (application rule)."
+        }
+      },
+      "additionalProperties": true
+    },
+    "SpanSource": {
+      "type": "object",
+      "description": "One source's support for a span. MUST carry at least one of content_url or content_id (application rule). The source side of the mapping is OPTIONAL: a span source MAY carry nothing beyond the identifier and its weight. When expressed, it takes one of two forms - ONE unlocated excerpt (the singular excerpt_hash/excerpt_text shorthand) or a LIST of located source spans (source_spans) - never both (application rule A7).",
+      "required": ["weight"],
+      "properties": {
+        "content_url": { "type": "string", "format": "uri" },
+        "content_id": { "type": "string" },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "Pins the exact source version or chunk. REQUIRED when any source span carries character offsets, which are anchored into the text this hash pins (application rule A7)."
+        },
+        "excerpt_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "Singular shorthand, equivalent to one unlocated source span: SHA-256 of the source excerpt supporting this span - anchors the source side without carrying publisher text. MUST NOT be combined with source_spans."
+        },
+        "excerpt_text": {
+          "type": "string",
+          "description": "The supporting source excerpt (singular shorthand). Permitted only at disclosure_tier 'publisher_evidence' or above (application rule). When present, its SHA-256 MUST equal excerpt_hash. MUST NOT be combined with source_spans."
+        },
+        "source_spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/SourceSpan" },
+          "description": "Span-to-span attribution: the located source spans within this source that support the answer span. The general form of the source side; the singular excerpt fields are its one-element unlocated shorthand and MUST NOT coexist with it (application rule A7)."
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "This source's share of the span's support."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "stance": {
+          "type": "string",
+          "enum": ["supporting", "contradicting", "unclassified"],
+          "description": "Optional (advanced treatment): qualitative sign of this source's relation to the span - a 'contradicting' span source disputes the span's claim. Mirrors the entry-level field."
+        },
+        "raw_contribution": {
+          "type": "number",
+          "description": "Optional (advanced treatment): the estimator's raw signed support estimate for this source on this span, before projection. Unbounded; MAY be negative. REQUIRED when stance is 'contradicting' (application rule A13), mirroring the entry-level rule."
+        }
+      },
+      "additionalProperties": true
+    },
+    "SourceSpan": {
+      "type": "object",
+      "description": "One located span of source content supporting an answer span - the source side of a span-to-span attribution edge. Anchored by excerpt_hash always, and optionally by character offsets into the exact text pinned by the enclosing SpanSource's content_hash - so the content's owner can verify the location against material it already holds, with no additional disclosure.",
+      "required": ["excerpt_hash"],
+      "dependentRequired": {
+        "char_start": ["char_end"],
+        "char_end": ["char_start"]
+      },
+      "properties": {
+        "char_start": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Start offset into the source text pinned by the enclosing SpanSource's content_hash, counted in Unicode code points. Offsets come as a pair and REQUIRE content_hash on the enclosing SpanSource (application rule A7)."
+        },
+        "char_end": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "End offset (exclusive). MUST be greater than char_start (application rule A7)."
+        },
+        "excerpt_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "SHA-256 of this source span's text - the anchor that works without disclosure."
+        },
+        "excerpt_text": {
+          "type": "string",
+          "description": "The source span's text. Permitted only at disclosure_tier 'publisher_evidence' or above (application rule A8). When present, its SHA-256 MUST equal excerpt_hash."
+        },
+        "excerpt_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Token count of the source span, mirroring the core excerpt_tokens idiom."
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "This source span's share of the enclosing source's support for the answer span. Optional; when any sibling carries a weight, all MUST, and they sum to 1 (application rule A7)."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "Estimator": {
+      "type": "object",
+      "description": "Identifies the attribution estimator. The (id, version) pair is the comparability key: consumers MUST NOT compare weights across different pairs without a published cross-validation.",
+      "required": ["id", "version"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$",
+          "description": "Reverse-DNS estimator identifier, e.g. 'ai.prorata.gist-fa'. Self-assigned, collision-free without a registry gatekeeper. Consumers MUST tolerate unknown ids."
+        },
+        "version": {
+          "type": "string",
+          "description": "Emitter-defined version (semver or date string). MUST change whenever outputs cease to be comparable with prior outputs."
+        },
+        "method": {
+          "type": "string",
+          "description": "Open vocabulary. Recommended values: 'shapley_estimate', 'exact_shapley', 'leave_one_out', 'attention_based', 'other'. Consumers MUST tolerate unknown values."
+        },
+        "validation_ref": {
+          "type": "string",
+          "format": "uri",
+          "description": "Published validation summary for this estimator version (e.g. agreement with sampled exact counterfactual computations)."
+        }
+      },
+      "additionalProperties": true
+    },
+    "Reporter": {
+      "type": "object",
+      "description": "Who computed the attribution. A distinct enum from core source_role: agent/origin/edge/index describe event observation, not attribution computation.",
+      "required": ["role", "reporter_id"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": ["platform", "attribution_provider"],
+          "description": "'platform': the vector was computed by the platform operating the agent. 'attribution_provider': computed by a third party occupying the independent telemetry-consumer seat (spec 7.3)."
+        },
+        "reporter_id": {
+          "type": "string",
+          "description": "Stable organisation identifier for the reporter."
+        },
+        "manifest_ref": {
+          "type": "string",
+          "format": "uri",
+          "description": "The reporter's /.well-known/content-telemetry.json manifest (spec 8) - reuses the core identity idiom; accreditation claims live in the manifest and profile, not here."
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

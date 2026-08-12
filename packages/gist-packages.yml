@@ -1,0 +1,70 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/Prorata-ai/PrtAdsSDK (first-party), https://platform.gist.ai/docs/quick-start-using-widgets,
+  plus registry searches on npm, PyPI, RubyGems, crates.io, Packagist and NuGet
+note: >-
+  Gist ships no server-side SDK. What it does ship is a native mobile ad SDK pair (Swift/SwiftUI
+  and Kotlin/Jetpack Compose) published from the company's own GitHub org, and a browser web
+  component distributed unpinned from its CDN. A registry sweep for "gist", "gist-answers",
+  "gist-chat-widget" and "prorata" on npm returned only unrelated third-party packages — the
+  closest name collision, `customerio-gist-web`, belongs to Customer.io's in-app messaging product
+  and is NOT this company. Do not confuse this Gist (gist.ai / ProRata) with getgist.com, a
+  separate marketing-automation vendor that also publishes a developer hub under the Gist name.
+packages:
+- language: swift
+  registry: swift-package-manager
+  name: GistAdsSDK
+  url: https://github.com/Prorata-ai/PrtAdsSDK
+  install: '.package(url: "https://github.com/Prorata-ai/PrtAdsSDK.git", from: "1.0.2")'
+  official: true
+  version: 1.0.1
+  published: '2026-07-22'
+  note: >-
+    Distributed straight from GitHub via Swift Package Manager, so there is no registry metadata
+    endpoint. `version` is the only tag the repository publishes (1.0.1); `published` is the date
+    of the newest commit on main, which is the closest dated signal SPM consumers have. CURRENCY
+    DEFECT: the repository README instructs consumers to depend on `from: "1.0.2"`, but no 1.0.2
+    tag exists — an SPM resolve against that requirement fails.
+- language: kotlin
+  registry: jitpack
+  name: com.github.Prorata-ai:PrtAdsSDK
+  url: https://jitpack.io/#Prorata-ai/PrtAdsSDK
+  install: implementation("com.github.Prorata-ai:PrtAdsSDK:1.0.1")
+  official: true
+  version: 1.0.1
+  published: '2026-07-22'
+  note: >-
+    Android SDK, built on demand by JitPack from the same repository (jitpack.yml, JDK 17,
+    Gradle publishToMavenLocal). CURRENCY DEFECT: the JitPack build API
+    (https://jitpack.io/api/builds/com.github.Prorata-ai/PrtAdsSDK) reports the only published
+    version, 1.0.1, with build status "Error" — the artifact the docs tell Android developers to
+    depend on does not currently resolve. The README notes Maven Central is "coming soon"; a
+    search of Maven Central found no com.gist or ai.prorata coordinates.
+- language: javascript
+  registry: cdn
+  name: chatWidget.js (gist-chat-widget)
+  url: https://cdn.gist.ai/chatWidget.js
+  install: <script type="module" src="https://cdn.gist.ai/chatWidget.js"></script>
+  official: true
+  version: null
+  published: '2026-08-06'
+  note: >-
+    The Gist Answers web component is distributed only as an unpinned ES module from the company
+    CDN — no npm package, no version in the URL, and no CDN JSON metadata endpoint (Azure Front
+    Door). `version: null` is the finding, not a gap: a consumer embedding this script cannot tell
+    which build they are getting either, and a change ships to every publisher site at once.
+    `published` is the Last-Modified header observed on the production bundle
+    (Thu, 06 Aug 2026 03:15:36 GMT, 3359 bytes). A parallel sandbox build is served from
+    https://cdn.sandbox.gist.ai/chatWidget.js.
+registries_checked:
+- {registry: npm, result: no first-party package}
+- {registry: pypi, result: no first-party package}
+- {registry: rubygems, result: no first-party package}
+- {registry: crates.io, result: no first-party package}
+- {registry: packagist, result: no first-party package}
+- {registry: nuget, result: no first-party package}
+- {registry: maven-central, result: not published; README says "coming soon"}
+- {registry: jitpack, result: 1 package, build status Error}
+- {registry: swift-package-manager, result: 1 package, git-tag distribution}
+official_count: 3

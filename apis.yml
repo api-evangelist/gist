@@ -1,36 +1,45 @@
 aid: gist
 name: Gist
 description: >-
-  Gist is an AI brand-visibility and discovery platform built by ProRata (founded 2024) that
-  helps publishers and advertisers stay visible, measurable, and monetizable inside generative
-  AI experiences. It offers three products: Gist GEO (generative engine optimization for
-  consistent organic visibility in AI answers), Gist Ads (paid brand amplification placed directly
-  in AI search surfaces and premium environments), and Gist Answers (an embeddable, publisher-backed
-  AI answer engine for on-site engagement and monetization). Gist positions itself as turning AI
-  from a black box into a measurable, actionable channel for brands and content owners. Surfaced as
-  a Mayfield portfolio lead and added to the API Evangelist network; the company publishes no public
-  API or developer surface at this time.
+  Gist is an AI brand-visibility, answer-engine and content-monetization platform built by ProRata
+  (founded 2024) that helps publishers and advertisers stay visible, measurable and monetizable
+  inside generative AI experiences. It ships three products: Gist GEO (generative engine
+  optimization for consistent organic visibility in AI answers), Gist Ads (paid brand amplification
+  placed directly in AI search surfaces, with native iOS and Android ad SDKs and a publisher ad
+  tag), and Gist Answers (an embeddable, publisher-backed AI answer engine for on-site engagement
+  and monetization). Behind those products sits a real developer surface documented at the Gist
+  Developer Hub: the Prorata API Service (chat, streaming completions, citations, per-source
+  attribution, threads, recommended and related questions, publisher management and document
+  summarization) at api.gist.ai, the Gist Content API for publisher article ingestion, the Gist
+  Content Network crawler and CMS/RSS ingestion paths, and the gist-chat-widget web component
+  distributed from cdn.gist.ai. Gist positions itself as turning AI from a black box into a
+  measurable, actionable channel for brands and content owners, with fair attribution and a 50/50
+  publisher revenue share as the stated basis of the model.
 url: https://raw.githubusercontent.com/api-evangelist/gist/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - mayfield
-x-tier: stub
-x-tier-reason: portfolio-lead
 accessModel:
   pricing: unknown
-  onboarding: unknown
+  onboarding: sales
   trial: false
   try_now: false
   public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
+  label: Onboarding required
+  confidence: medium
+  source:
+  - https://platform.gist.ai/docs/gist-content-api
+  - https://platform.gist.ai/docs/about-gist-services
+  generated: '2026-08-12'
+  method: searched
+  note: >-
+    API keys are issued at the Publisher Group level during onboarding — "API keys are provided
+    during onboarding. Contact us if you need access." No self-serve signup and no published
+    price list were found.
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-19'
+modified: '2026-08-12'
 tags:
 - Company
 - Artificial Intelligence
@@ -41,8 +50,100 @@ tags:
 - Publishers
 - Search
 - Content
-image: https://gist.ai/favicon.ico
-apis: []
+- Answer Engine
+- Attribution
+- Content Licensing
+- Media
+- RAG
+- Advertising Technology
+image: https://cdn.prod.website-files.com/69b4128468609a447fd7dd25/6a05c44830dff65379b10594_512x512.png
+apis:
+- name: Gist Answers API (Prorata API Service)
+  description: >-
+    REST API behind Gist Answers. Creates chats against a publisher's licensed corpus, streams the
+    answer back over Server-Sent Events, and returns the citations and the per-source attribution
+    credit distribution for each turn. Also covers thread management, recommended and related
+    question generation, publisher-group lookup and URL-scoped document summarization. Auth is an
+    API key sent as `Authorization: Bearer <key>`, with an `X-User-ID` header naming the calling
+    domain or organization on most operations.
+  humanURL: https://platform.gist.ai/docs/ga-overview
+  baseURL: https://api.gist.ai
+  tags:
+  - ai-search
+  - answer-engine
+  - rag
+  - citations
+  - attribution
+  - streaming
+  - server-sent-events
+  - summarization
+  - publishers
+  properties:
+  - type: OpenAPI
+    url: openapi/gist-answers-api-openapi.yml
+  - type: Documentation
+    url: https://platform.gist.ai/docs/ga-overview
+  - type: APIReference
+    url: https://platform.gist.ai/reference/get_v1-health
+  - type: Authentication
+    url: authentication/gist-authentication.yml
+  - type: Conventions
+    url: conventions/gist-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gist-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/gist-rate-limits.yml
+  - type: DataModel
+    url: data-model/gist-data-model.yml
+  - type: Overlay
+    url: overlays/gist-answers-api-overlay.yaml
+  - type: ToolCrosswalk
+    url: mcp/gist-tool-crosswalk.yml
+- name: Gist Content API
+  description: >-
+    Publisher ingest API for the Gist Content Network. Lets publisher partners push articles to
+    ProRata in real time (`POST /ingest/article`) or in bulk for archival backfill
+    (`POST /ingest/multiple_articles`), as an alternative to the ProRataInc crawler, CMS
+    integrations (WordPress, ArcXP, Strapi, Substack) or RSS feeds. Authenticated with a Publisher
+    Group API key sent as `Authorization: Bearer <key>`; default limit 10 requests per minute.
+    The documentation publishes the endpoint paths and payloads but does not publish the host, so
+    no baseURL is recorded here rather than guessed.
+  humanURL: https://platform.gist.ai/docs/gist-content-api
+  tags:
+  - content-ingestion
+  - publishers
+  - content-licensing
+  - syndication
+  properties:
+  - type: Documentation
+    url: https://platform.gist.ai/docs/gist-content-api
+  - type: APIReference
+    url: https://platform.gist.ai/docs/gist-content-api
+  - type: GettingStarted
+    url: https://platform.gist.ai/docs/gcn-overview
+- name: Gist Ads Ad Tag and Display Ad API
+  description: >-
+    Advertising delivery surface for Gist Ads. Publishers load the `adtag.js` bundle from
+    tp-at.prorata.ai and call `window.prtag.defineSlot({id, api_key, url, geo}, slotId, sizes,
+    adTypes)` to request contextual ads against a search query; the ad tag then calls the display
+    ad decision service (disp-api.prorata.ai, endpoints `/health`, `/decision`, `/api/v1/chat/`)
+    and the search ad service (tp-srch-api.prorata.ai, which requires Publisher-ID and
+    Publisher-Key headers). The same hosts back the first-party iOS and Android Gist Ads SDKs.
+  humanURL: https://tp-at.prorata.ai/docs
+  baseURL: https://tp-at.prorata.ai
+  tags:
+  - advertising
+  - ad-tag
+  - ad-serving
+  - contextual-advertising
+  - monetization
+  properties:
+  - type: Documentation
+    url: https://tp-at.prorata.ai/docs
+  - type: APIReference
+    url: https://tp-at.prorata.ai/docs
+  - type: SourceCode
+    url: https://github.com/Prorata-ai/PrtAdsSDK
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -51,18 +152,76 @@ maintainers:
 common:
 - type: Website
   url: https://gist.ai
+- type: DeveloperPortal
+  url: https://platform.gist.ai/docs/about-gist-services
+- type: Documentation
+  url: https://platform.gist.ai/docs/about-gist-services
+- type: APIReference
+  url: https://platform.gist.ai/reference/get_v1-health
+- type: GettingStarted
+  url: https://platform.gist.ai/docs/quick-start-using-widgets
 - type: Blog
   url: https://gist.ai/get-the-gist
 - type: Support
   url: https://gist.ai/contact
+- type: GitHubOrganization
+  url: https://github.com/Prorata-ai
+- type: Login
+  url: https://console.gist.ai/
 - type: PrivacyPolicy
   url: https://gist.ai/privacy-policy
 - type: TermsOfService
   url: https://gist.ai/terms-of-use
+- type: LLMsTxt
+  url: llms/gist-llms.txt
+- type: Packages
+  url: packages/gist-packages.yml
+- type: SDKs
+  url: packages/gist-packages.yml
+- type: Components
+  url: components/gist-components.yml
+- type: Sandbox
+  url: sandbox/gist-sandbox.yml
+- type: Authentication
+  url: authentication/gist-authentication.yml
+- type: Conventions
+  url: conventions/gist-conventions.yml
+- type: ErrorCatalog
+  url: errors/gist-problem-types.yml
+- type: RateLimits
+  url: rate-limits/gist-rate-limits.yml
+- type: Plans
+  url: plans/gist-plans-pricing.yml
+- type: Lifecycle
+  url: lifecycle/gist-lifecycle.yml
+- type: Conformance
+  url: conformance/gist-conformance.yml
+- type: DataModel
+  url: data-model/gist-data-model.yml
+- type: JSONSchema
+  url: json-schema/gist-attribution-extension.json
+- type: MCPServer
+  url: mcp/gist-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/gist-tool-crosswalk.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Overlay
+  url: overlays/gist-answers-api-overlay.yaml
 - type: DomainSecurity
   url: security/gist-domain-security.yml
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 26
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
+x-coverage:
+  state: covered
+  reason: null
+  detail: >-
+    Round 1 recorded "no public API or developer surface". That was wrong. STEP 0b contract
+    discovery found the Gist Developer Hub at platform.gist.ai (a ReadMe hub), its llms.txt, and
+    the OpenAPI backing its API reference in the ReadMe API registry — a 16-operation OpenAPI
+    3.0.0 titled "Prorata API Service", confirmed against a live 200 from
+    https://api.gist.ai/v1/health.
+  checked: '2026-08-12'

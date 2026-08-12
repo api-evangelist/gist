@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contenttelemetry.org/extensions/attribution/attribution-session-strict.json",
+  "$comment": "Extension of Content Telemetry v0.1. Canonical specification: https://contenttelemetry.org. This URI is reserved for registration; it does not resolve yet. Extension: org.contenttelemetry.attribution, version 2026-07-13. PROPOSAL DRAFT.",
+  "title": "Content Telemetry Session with Fractional Attribution (strict)",
+  "description": "Composed schema: a Content Telemetry v0.1 session document whose optional top-level 'attribution' property, when present, is strictly validated against the fractional attribution extension. The unmodified core schema already accepts the attribution property as an unknown top-level field (top-level additionalProperties defaults to true); this composition adds strict validation of the extension object without changing the core. Validators resolve the core $ref through a local schema registry, as the reference test suite already does for the standalone event envelope.",
+  "allOf": [
+    { "$ref": "https://contenttelemetry.org/schema/v0.1/telemetry-session.json" },
+    {
+      "type": "object",
+      "properties": {
+        "attribution": { "$ref": "attribution-extension.json#/$defs/AttributionBlock" }
+      }
+    }
+  ]
+}

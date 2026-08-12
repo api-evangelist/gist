@@ -1,0 +1,71 @@
+generated: '2026-08-12'
+method: derived
+status: candidate
+source: mcp/gist-mcp.yml + openapi/gist-answers-api-openapi.yml
+note: >-
+  Gist ships no MCP server and no GraphQL endpoint, so this is NOT a divergence map between an
+  observed tool list and a REST spec. It is the binding between the candidate tool set in
+  mcp/gist-mcp.yml and the operations that back it, plus — the part that carries real information
+  — the agent-facing surfaces Gist ships INSTEAD of MCP, and the operations that no tool can reach.
+  Every row is 1:1 and high confidence because the tools were derived from the operations.
+surfaces:
+  openapi:
+    file: openapi/gist-answers-api-openapi.yml
+    source: https://dash.readme.com/api/v1/api-registry/c0mok9ckmb84e34y
+    operations: 16
+    gated: false
+    operation_ids_declared: 0
+    operation_ids_note: >-
+      The spec declares NO operationIds on any of its 16 operations, so `rest:` below quotes
+      "METHOD /path" — the only stable identity the published contract offers. This is also why
+      skills/ are grounded in method+path rather than ids.
+  graphql:
+    endpoint: null
+    note: No GraphQL surface. https://api.gist.ai/graphql returns the 502 gateway page.
+  mcp:
+    url: null
+    gated: null
+    note: No MCP server published; see the probe list in mcp/gist-mcp.yml.
+crosswalk:
+- {tool: create_chat, category: answers, rest: ['POST /v1/chat'], binding: rest, confidence: high}
+- {tool: stream_chat_response, category: answers, rest: ['GET /v1/chat/response/{threadId}/{turnId}'], binding: rest, confidence: high, note: 'SSE — an MCP tool cannot stream, so a real server would have to buffer the stream and return the assembled answer'}
+- {tool: get_chat_citations, category: attribution, rest: ['GET /v1/chat/citations/{threadId}/{turnId}'], binding: rest, confidence: high}
+- {tool: get_chat_attributions, category: attribution, rest: ['GET /v1/chat/attributions/{threadId}/{turnId}'], binding: rest, confidence: high}
+- {tool: stream_completions, category: answers, rest: ['POST /v1/chat/completions'], binding: rest, confidence: high, note: marked Experimental in the reference}
+- {tool: list_threads, category: threads, rest: ['GET /v1/threads'], binding: rest, confidence: high}
+- {tool: get_thread, category: threads, rest: ['GET /v1/threads/{threadId}'], binding: rest, confidence: high}
+- {tool: delete_thread, category: threads, rest: ['DELETE /v1/threads/{threadId}'], binding: rest, confidence: high, note: destructive and NOT idempotency-protected — the API documents no idempotency key}
+- {tool: get_recommended_questions, category: questions, rest: ['GET /v1/questions/recommended'], binding: rest, confidence: high}
+- {tool: get_related_questions, category: questions, rest: ['POST /v1/questions/related'], binding: rest, confidence: high}
+- {tool: get_publisher_group, category: publishers, rest: ['GET /v1/publishers'], binding: rest, confidence: high}
+- {tool: get_publisher, category: publishers, rest: ['GET /v1/publishers/{id}'], binding: rest, confidence: high}
+- {tool: summarize_url, category: summaries, rest: ['POST /v1/summaries'], binding: rest, confidence: high}
+- {tool: stream_summary, category: summaries, rest: ['GET /v1/summaries/{summaryId}'], binding: rest, confidence: high}
+- {tool: get_service_health, category: ops, rest: ['GET /v1/health'], binding: rest, confidence: high, note: the only unauthenticated operation}
+mcp_only: []
+rest_only:
+- {operation: 'GET /', capability: service banner, reason: 'root status string; no agent value'}
+non_mcp_agent_surfaces:
+- surface: llms.txt
+  url: https://platform.gist.ai/llms.txt
+  status: 200
+  note: >-
+    A real, current llms.txt covering 22 guide pages and 12 API reference pages, each with a .md
+    twin. This is the agent surface Gist actually ships, and it is a good one.
+- surface: ProRataInc crawler
+  note: >-
+    Gist is on both sides of the agent economy: it consumes the web with a declared crawler
+    (user-agent ProRataInc, source IPs 172.190.46.235 and 172.171.95.51, robots.txt respected) and
+    it sells attribution back to the publishers it reads.
+- surface: content-telemetry attribution extension
+  url: https://github.com/Prorata-ai/content-telemetry-attribution
+  note: >-
+    A published JSON Schema proposal for carrying quantified per-source attribution in AI output —
+    machine-readable, first-party, and captured in json-schema/.
+coverage:
+  tools_named: 15
+  tools_bound: 15
+  mcp_only: 0
+  rest_operations_total: 16
+  rest_operations_with_tool: 15
+  rest_operations_without_tool: 1

@@ -1,0 +1,90 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/gist-answers-api-openapi.yml
+note: >-
+  The spec declares an EMPTY components.schemas — every request and response body is inlined at
+  the operation. The entity graph below was therefore reconstructed from the inline property names
+  and the path parameters, not from $ref links, and relationship cardinalities are read from the
+  shape of the payloads. Where the spec gives no id format, none is invented.
+schema_reuse:
+  components_schemas: 0
+  note: >-
+    Zero reusable schemas across 16 operations is the single largest contract-quality defect in
+    this API. Thread, turn, citation, attribution and publisher shapes are each re-declared inline
+    wherever they appear, so a generated client gets no shared types and a consumer cannot tell
+    that the `threads[]` element in GET /v1/threads is the same entity as GET /v1/threads/{threadId}.
+entities:
+- name: PublisherGroup
+  description: >-
+    The tenancy and billing boundary. Owns the API key, the set of publications, and the domain
+    allowlist that gates summarization.
+  identifier: id
+  fields: [id, name, description, publishers]
+  source_operations: ['GET /v1/publishers']
+- name: Publisher
+  description: An individual publication inside a Publisher Group.
+  identifier: id
+  fields: [id, name, description, enabled, config, sites]
+  source_operations: ['GET /v1/publishers/{id}']
+- name: Thread
+  description: A conversation. Holds an ordered set of turns.
+  identifier: threadId
+  fields: [threadId, threadTitle, lastInteraction, turns]
+  source_operations: ['GET /v1/threads', 'GET /v1/threads/{threadId}', 'DELETE /v1/threads/{threadId}']
+- name: Turn
+  description: >-
+    One question/answer exchange within a thread. Created by POST /v1/chat, which returns
+    thread_id + turn_id; the answer text, its citations and its attribution are then fetched by
+    that pair.
+  identifier: turn_id
+  fields: [turn_id, thread_id, thread_title, citations, attributions, response_time]
+  source_operations: ['POST /v1/chat', 'GET /v1/chat/response/{threadId}/{turnId}']
+- name: Citation
+  description: A source document referenced in an answer.
+  identifier: null
+  source_operations: ['GET /v1/chat/citations/{threadId}/{turnId}']
+  note: The 200 response schema declares no properties in the published spec.
+- name: Attribution
+  description: >-
+    The per-source credit split for one turn, expressed at four levels of aggregation. This is the
+    commercial core of the product — it is what the 50/50 revenue share is computed against.
+  identifier: null
+  fields: [credit_dist, domain_credit_dist, document_credit_dist, publisher_credit_dist]
+  source_operations: ['GET /v1/chat/attributions/{threadId}/{turnId}']
+- name: Summary
+  description: An asynchronous summarization of one URL, created then streamed.
+  identifier: summaryId
+  fields: [summaryId, url, length, medium, style]
+  source_operations: ['POST /v1/summaries', 'GET /v1/summaries/{summaryId}']
+- name: Question
+  description: >-
+    A recommended or related question. Recommended questions are generated for the organization;
+    related questions are generated for a specific turn.
+  identifier: null
+  fields: [questions]
+  source_operations: ['GET /v1/questions/recommended', 'POST /v1/questions/related']
+- name: Article
+  description: >-
+    A publisher content item ingested into the Gist Content Network. Not part of the Answers
+    OpenAPI — documented separately on the Content API page.
+  identifier: publication_external_id + external_url
+  fields: [publication_external_id, publication_domain, publish_date, article_date, title, content_type, external_url, canonical_url, content, article_thumbnail_url]
+  source_operations: ['POST /ingest/article', 'POST /ingest/multiple_articles']
+  source: https://platform.gist.ai/docs/gist-content-api
+relationships:
+- {from: PublisherGroup, to: Publisher, type: has_many, via: publishers}
+- {from: Publisher, to: Article, type: has_many, via: publication_external_id / publication_domain}
+- {from: Thread, to: Turn, type: has_many, via: turns}
+- {from: Turn, to: Thread, type: belongs_to, via: thread_id}
+- {from: Turn, to: Citation, type: has_many, via: citations}
+- {from: Turn, to: Attribution, type: has_one, via: attributions}
+- {from: Attribution, to: Publisher, type: has_many, via: publisher_credit_dist}
+- {from: Attribution, to: Article, type: has_many, via: document_credit_dist}
+- {from: Summary, to: Publisher, type: belongs_to, via: url domain must match a publisher domain}
+- {from: Question, to: Turn, type: belongs_to, via: thread_id + turn_id (related questions only)}
+id_formats:
+  documented: false
+  note: >-
+    No id prefix scheme, format or length is published for threadId, turnId, summaryId or
+    publisher id. The spec types them all as plain strings.
+subway: null

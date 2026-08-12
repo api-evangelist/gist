@@ -1,0 +1,111 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  openapi/gist-answers-api-openapi.yml (derived), enriched from
+  https://platform.gist.ai/reference/get_v1-health, https://platform.gist.ai/docs/gist-content-api
+note: >-
+  Cross-cutting request/response semantics for the Gist / ProRata surface. Everything here is
+  either present in the harvested OpenAPI or stated in the developer hub. Idempotency is recorded
+  as ABSENT — no idempotency key header, parameter or retry-safety contract appears anywhere in
+  the spec or the docs — so no Idempotency pointer is emitted in apis.yml.
+authentication:
+  style: api-key-as-bearer
+  header: Authorization
+  format: 'Bearer <api-key>'
+  scheme_name: apiKeyAuth
+  spec_type: apiKey (in header, name Authorization)
+  issuance: Publisher Group level, provisioned by ProRata during onboarding
+  detail: authentication/gist-authentication.yml
+tenancy:
+  header: X-User-ID
+  required: true
+  applies_to: >-
+    All Chat, Thread, Question and Publishers operations. Absent from /v1/health, /v1/summaries and
+    GET /v1/summaries/{summaryId}.
+  meaning: >-
+    The caller's domain or organization identifier — the same value publishers pass as the
+    `user-id` attribute on the gist-chat-widget / gist-search-widget elements.
+idempotency:
+  supported: false
+  header: null
+  evidence: >-
+    No Idempotency-Key header, no idempotency parameter, and no retry-safety guidance in the
+    OpenAPI or the developer hub. POST /v1/chat and POST /v1/summaries both create server-side
+    resources and are not documented as safely retryable.
+pagination:
+  style: offset
+  operations: [GET /v1/threads]
+  request_params:
+  - {name: startAt, in: query, type: integer, description: zero-based offset of the first thread returned}
+  - {name: maxResults, in: query, type: integer, description: page size}
+  response_fields: [threads, total]
+  cursor: false
+  link_header: false
+  note: >-
+    Only the thread list is paginated. GET /v1/questions/recommended caps its result set with a
+    `count` query parameter rather than paging.
+streaming:
+  transport: server-sent-events
+  content_type: text/event-stream
+  operations:
+  - GET /v1/chat/response/{threadId}/{turnId}
+  - POST /v1/chat/completions
+  - GET /v1/summaries/{summaryId}
+  event_shape: {event: string, data: string}
+  client_guidance: >-
+    The reference for GET /v1/summaries/{summaryId} tells consumers to read it with EventSource in
+    the browser.
+  pattern: >-
+    Two-call create-then-stream. POST /v1/chat returns thread_id + turn_id; POST /v1/summaries
+    returns summaryId; the caller then opens the matching GET stream to receive the generated text.
+attribution:
+  operations: ['GET /v1/chat/attributions/{threadId}/{turnId}', 'GET /v1/chat/citations/{threadId}/{turnId}']
+  response_fields: [credit_dist, domain_credit_dist, document_credit_dist, publisher_credit_dist]
+  note: >-
+    Per-source credit distribution is a first-class part of the response contract, not a side
+    report. It is the API expression of the 50/50 publisher revenue share the company markets, and
+    the same idea ProRata has proposed as a Content Telemetry extension (see json-schema/).
+versioning:
+  scheme: uri-path
+  current: v1
+  policy_url: null
+  note: >-
+    The spec's servers block is the relative string "/v1" while every path also begins "/v1", so
+    the document as published names no host and double-counts the prefix. The verified callable
+    form is https://api.gist.ai + the path as written (GET https://api.gist.ai/v1/health returns
+    200). openapi/gist-answers-api-openapi.yml carries the repaired servers block; the untouched
+    original is in openapi/_original/.
+error_envelope:
+  shape: {error: string, message: string, statusCode: integer}
+  observed_live: >-
+    {"error":"Unauthorized","message":"Missing or invalid Authorization header","statusCode":401}
+    from https://api.gist.ai/v1/... on 2026-08-12
+  problem_json: false
+  rfc9457: false
+  variants:
+  - {operations: [POST /v1/summaries], shape: '{error, status}', note: 400 responses use a different envelope}
+  - {operations: [POST /v1/summaries], shape: '{error}', note: 403 domain-not-authorized}
+  detail: errors/gist-problem-types.yml
+rate_limit_signalling:
+  response_headers: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset]
+  exhausted_status: 429
+  retry_after: not documented
+  detail: rate-limits/gist-rate-limits.yml
+caching:
+  operations: [GET /v1/publishers, 'GET /v1/publishers/{id}']
+  mechanism: server-side Redis cache, TTL 1 hour, with cache headers included in the response
+  source: https://platform.gist.ai/reference/get_v1-publishers
+request_tracing:
+  request_id_header: not documented
+metadata:
+  supported: false
+field_expansion:
+  supported: false
+content_negotiation:
+  request: application/json
+  response: application/json, text/event-stream
+domain_scoping:
+  operation: POST /v1/summaries
+  rule: >-
+    The submitted URL's domain must EXACTLY match one of the publisher domains attached to the
+    caller's publisher group. Subdomains are not implicitly allowed. Violations return 403.

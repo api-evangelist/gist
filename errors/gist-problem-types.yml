@@ -1,0 +1,126 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  openapi/gist-answers-api-openapi.yml 4xx/5xx responses, plus the error table in
+  https://platform.gist.ai/docs/gist-content-api and a live unauthenticated probe of
+  https://api.gist.ai/v1/ on 2026-08-12
+format: vendor-json
+rfc9457: false
+note: >-
+  Gist does not use application/problem+json. The dominant envelope is
+  {error, message, statusCode}; the summarization operations use two narrower shapes. The provider
+  publishes no error-code registry — there are no symbolic codes, only HTTP statuses with
+  human-readable descriptions — so the catalog below is keyed on status + operation.
+envelope:
+  primary: {error: string, message: string, statusCode: integer}
+  observed: '{"error":"Unauthorized","message":"Missing or invalid Authorization header","statusCode":401}'
+  alternates:
+  - {shape: '{error, status}', used_by: POST /v1/summaries 400}
+  - {shape: '{error}', used_by: POST /v1/summaries 403}
+problems:
+- status: 400
+  title: Invalid thread ID or turn ID format
+  remediation: Send threadId and turnId exactly as returned by POST /v1/chat.
+  source_operations:
+  - GET /v1/chat/attributions/{threadId}/{turnId}
+  - GET /v1/chat/citations/{threadId}/{turnId}
+  - GET /v1/chat/response/{threadId}/{turnId}
+- status: 400
+  title: Bad request - Missing user_prompt
+  remediation: user_prompt is the only required field on POST /v1/chat.
+  source_operations: [POST /v1/chat]
+- status: 400
+  title: Bad request - Missing required fields
+  remediation: messages is required on POST /v1/chat/completions.
+  source_operations: [POST /v1/chat/completions]
+- status: 400
+  title: Bad request - Missing publisher ID
+  source_operations: ['GET /v1/publishers/{id}']
+- status: 400
+  title: Invalid request parameters
+  envelope: '{error, status}'
+  source_operations: [POST /v1/summaries]
+- status: 400
+  title: Invalid summaryId
+  source_operations: ['GET /v1/summaries/{summaryId}']
+- status: 401
+  title: Unauthorized - Invalid or missing API key
+  message: Missing or invalid Authorization header
+  remediation: >-
+    Send the header "Authorization: Bearer <api-key>". Keys are issued per Publisher Group at
+    onboarding.
+  verified_live: true
+  note: >-
+    api.gist.ai returns this for EVERY /v1/* path including non-existent ones, so a 401 from this
+    host must not be read as evidence that an endpoint exists.
+  source_operations:
+  - POST /v1/chat
+  - POST /v1/chat/completions
+  - GET /v1/chat/attributions/{threadId}/{turnId}
+  - GET /v1/chat/citations/{threadId}/{turnId}
+  - GET /v1/chat/response/{threadId}/{turnId}
+  - GET /v1/publishers
+  - GET /v1/publishers/{id}
+  - GET /v1/questions/recommended
+  - POST /v1/questions/related
+  - GET /v1/threads
+  - GET /v1/threads/{threadId}
+  - DELETE /v1/threads/{threadId}
+  - POST /v1/summaries
+  - GET /v1/summaries/{summaryId}
+- status: 403
+  title: Forbidden - Publisher not in organization's publisher group
+  source_operations: ['GET /v1/publishers/{id}']
+- status: 403
+  title: Forbidden - URL domain not authorized for this organization
+  envelope: '{error}'
+  remediation: >-
+    The summarized URL's domain must exactly match a publisher domain in your publisher group.
+    Subdomains are not automatically authorized.
+  source_operations: [POST /v1/summaries]
+- status: 404
+  title: Thread, turn, citations or attributions not found
+  source_operations:
+  - GET /v1/chat/attributions/{threadId}/{turnId}
+  - GET /v1/chat/citations/{threadId}/{turnId}
+  - GET /v1/chat/response/{threadId}/{turnId}
+  - GET /v1/threads/{threadId}
+  - DELETE /v1/threads/{threadId}
+- status: 404
+  title: Publisher not found
+  source_operations: ['GET /v1/publishers/{id}']
+- status: 404
+  title: URL content not found / Summary not found
+  source_operations: [POST /v1/summaries, 'GET /v1/summaries/{summaryId}']
+- status: 429
+  title: Too Many Requests - request rejected due to rate limiting
+  envelope: '{error, message, statusCode}'
+  remediation: >-
+    Back off using X-RateLimit-Reset. Limits are configured per organization; the Content API
+    default is 10 requests per minute.
+  source_operations:
+  - POST /v1/chat
+  - POST /v1/chat/completions
+  - GET /v1/chat/attributions/{threadId}/{turnId}
+  - GET /v1/chat/citations/{threadId}/{turnId}
+  - GET /v1/chat/response/{threadId}/{turnId}
+  - GET /v1/questions/recommended
+  - POST /v1/questions/related
+  - GET /v1/threads
+  - GET /v1/threads/{threadId}
+  - DELETE /v1/threads/{threadId}
+  - POST /v1/summaries
+  - GET /v1/summaries/{summaryId}
+  - POST /ingest/article
+  - POST /ingest/multiple_articles
+- status: 500
+  title: Internal server error
+  source_operations: all
+content_api_errors:
+  source: https://platform.gist.ai/docs/gist-content-api
+  codes:
+  - {status: 400, meaning: Invalid or missing parameters}
+  - {status: 401, meaning: Unauthorized / invalid API key}
+  - {status: 429, meaning: Rate limit exceeded}
+  - {status: 500, meaning: Internal server error}
+problem_count: 14

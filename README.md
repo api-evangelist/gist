@@ -42,6 +42,28 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Gist is a company surfaced as a portfolio company of mayfield and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+Gist is an AI brand-visibility, answer-engine and content-monetization platform built by ProRata.
+It ships Gist GEO, Gist Ads and Gist Answers, and it has a real, public developer surface behind
+them at the [Gist Developer Hub](https://platform.gist.ai/docs/about-gist-services).
+
+What this profile holds, all harvested from public URLs on 2026-08-12:
+
+- **OpenAPI** for the Gist Answers API ("Prorata API Service") — 16 operations covering chat,
+  streaming completions, citations, per-source attribution, threads, questions, publishers and
+  URL summarization. Verbatim copy in `openapi/_original/`; the working copy carries a repaired
+  `servers` block (the published one is the relative string `/v1`, which names no host) and the
+  repair is recorded in `overlays/`.
+- **llms.txt** served by the provider at `platform.gist.ai/llms.txt`, saved verbatim in `llms/`.
+- **JSON Schemas** from ProRata's proposed fractional-attribution extension to the Content
+  Telemetry standard, in `json-schema/`.
+- **Packages** — the first-party Gist Ads SDKs for iOS/macOS (Swift Package Manager) and Android
+  (JitPack), plus the unpinned CDN web component, with their real currency recorded.
+- Derived and searched artifacts for authentication, conventions, errors, rate limits, plans,
+  lifecycle, conformance, the data model, components, sandbox environments, a candidate MCP tool
+  set with its crosswalk, and four packaged Agent Skills.
+- Verified absences: no `/.well-known/` document on any host, no agent card, no MCP server, no
+  status page, no changelog, no published pricing, no trust center. See
+  `well-known/gist-well-known.yml`, `lifecycle/gist-lifecycle.yml` and
+  `conformance/gist-conformance.yml`.
 
 Backed by: mayfield — https://gist.ai

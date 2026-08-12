@@ -1,0 +1,56 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://platform.gist.ai/docs/quick-start-using-widgets,
+  https://platform.gist.ai/docs/displaying-search-results-on-new-page,
+  https://github.com/Prorata-ai/PrtAdsSDK/blob/main/swift-sdk/Sources/GistAdsSDK/Constants.swift
+note: >-
+  Gist separates test from live by HOST, not by key prefix. The docs never publish a test API key,
+  a test publisher id, or any magic value, and none is invented here — a sandbox integration still
+  requires credentials issued by ProRata during onboarding.
+separation:
+  mechanism: host-swap
+  key_prefixes: none published
+  test_credentials_published: false
+environments:
+- name: sandbox
+  surface: Gist Answers widgets
+  cdn: https://cdn.sandbox.gist.ai
+  loaders: [https://cdn.sandbox.gist.ai/chatWidget.js, https://cdn.sandbox.gist.ai/searchWidget.js]
+  probe: {url: 'https://cdn.sandbox.gist.ai/chatWidget.js', status: 200, bytes: 3359}
+  docs_quote: >-
+    "Replace 'path-to-widget' with either https://cdn.sandbox.gist.ai if you are testing and want
+    to connect to the sandbox environment to test."
+- name: production
+  surface: Gist Answers widgets
+  cdn: https://cdn.gist.ai
+  loaders: [https://cdn.gist.ai/chatWidget.js, https://cdn.gist.ai/searchWidget.js]
+  probe: {url: 'https://cdn.gist.ai/chatWidget.js', status: 200, bytes: 3359}
+- name: staging
+  surface: Gist Ads ad tag
+  host: https://tp-at.staging.prorata.ai
+  source: GistAdsSDK Constants.swift (APIConstants.stagingIframeBaseURL)
+  override_env_var: GIST_ADS_STAGING_IFRAME_URL
+- name: integration
+  surface: Gist Ads ad tag
+  host: https://tp-at.integration.prorata.ai
+  source: GistAdsSDK Constants.swift (APIConstants.integrationIframeBaseURL)
+  override_env_var: GIST_ADS_INTEGRATION_IFRAME_URL
+- name: production
+  surface: Gist Ads ad tag
+  host: https://tp-at.prorata.ai
+  source: GistAdsSDK Constants.swift (APIConstants.productionIframeBaseURL)
+  override_env_var: GIST_ADS_PRODUCTION_IFRAME_URL
+  probe: {url: 'https://tp-at.prorata.ai/adtag.js', status: 200, bytes: 218892}
+api_sandbox:
+  gist_answers_api: >-
+    No sandbox host is published for api.gist.ai. The only unauthenticated operation on the API is
+    GET /v1/health, which is genuinely public — probed 2026-08-12 and returned a JSON body with a
+    per-dependency status map. Every other /v1/* path returns
+    {"error":"Unauthorized","message":"Missing or invalid Authorization header","statusCode":401},
+    including paths that do not exist, so a 401 there is not evidence an endpoint is present.
+  gist_content_api: >-
+    No sandbox host is published; the ingest docs give relative paths only.
+test_values: []
+test_clocks: false
+fixtures: false

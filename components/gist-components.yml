@@ -1,0 +1,96 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://platform.gist.ai/docs/quick-start-using-widgets,
+  https://platform.gist.ai/docs/displaying-search-results-on-new-page,
+  https://platform.gist.ai/docs/customizing-look-and-feel,
+  https://platform.gist.ai/docs/ads-within-gist-answers,
+  https://github.com/Prorata-ai/PrtAdsSDK
+note: >-
+  Gist's primary integration path is client-side components, not a server SDK. Two browser custom
+  elements deliver Gist Answers, and two native controls deliver Gist Ads. Every value below is
+  quoted from the published docs or the first-party SDK source; nothing is inferred.
+families:
+- family: Gist Answers web components
+  platform: browser
+  distribution: >-
+    Unpinned ES modules from the company CDN. Production https://cdn.gist.ai, sandbox
+    https://cdn.sandbox.gist.ai — the docs instruct publishers to swap the host to switch
+    environments. No npm package.
+  loaders:
+  - name: chatWidget.js
+    url: https://cdn.gist.ai/chatWidget.js
+    sandbox_url: https://cdn.sandbox.gist.ai/chatWidget.js
+    tag: <script type="module" src="https://cdn.gist.ai/chatWidget.js"></script>
+  - name: searchWidget.js
+    url: https://cdn.gist.ai/searchWidget.js
+    sandbox_url: https://cdn.sandbox.gist.ai/searchWidget.js
+    tag: <script type="module" src="https://cdn.gist.ai/searchWidget.js"></script>
+  components:
+  - element: gist-chat-widget
+    purpose: >-
+      AI search box plus the rendered Gist answer. Displays the answer in a modal when `floating`
+      is set, or inline on a dedicated results page.
+    attributes:
+    - {name: api-key, required: true, description: Your unique ProRata API key}
+    - {name: user-id, required: true, description: Your domain or organization identifier}
+    - {name: default-placeholder, required: false, description: Placeholder copy in the search box}
+    - {name: floating, required: false, description: Pins the search box to the bottom centre of the viewport and renders the answer in a modal}
+    - {name: sticky-prompt, required: false, description: Keeps the search box visible on the results page while scrolling}
+  - element: gist-search-widget
+    purpose: >-
+      Search box only, for the pattern where the answer renders on a separate results page that
+      hosts a gist-chat-widget.
+    attributes:
+    - {name: api-key, required: true, description: Your unique ProRata API key}
+    - {name: user-id, required: true, description: Your domain or organization identifier}
+    - {name: target-url, required: true, description: URL of the results page to navigate to}
+    - {name: default-placeholder, required: false}
+    - {name: sticky-prompt, required: false}
+    - {name: floating, required: false}
+  theming:
+    mechanism: CSS custom properties, applied page-level, inline-scoped, or from an external stylesheet
+    documented_properties:
+    - --gist-color-action-primary
+    - --gist-color-on-action
+    - --gist-color-text-primary
+    - --gist-color-text-secondary
+    - --gist-color-text-placeholder
+    - --gist-color-surface-main
+    - --gist-color-surface-widget
+    - --gist-color-brand-accent-1
+    - --gist-color-brand-accent-2
+    - --gist-color-brand-accent-3
+    - --gist-color-brand-accent-4
+    - --gist-font-family-base
+    - --gist-font-size-base
+    - --gist-font-weight-light
+    - --gist-font-weight-medium
+    - --gist-font-weight-semibold
+    - --gist-layout-input-radius
+    - --gist-color-icon-sparkles
+  advertising_behaviour: >-
+    The widget may insert a Gist Ads unit inside the answer automatically, with no publisher
+    configuration. The docs require the publisher to verify a "Sponsored" label top-left, the
+    advertiser name top-right, an uncut ad body, a working call to action, and two horizontal
+    rules separating the ad from the answer.
+- family: Gist Ads native controls
+  platform: ios-macos-android
+  distribution: Swift Package Manager and JitPack from https://github.com/Prorata-ai/PrtAdsSDK
+  components:
+  - element: GistAdControl
+    platform: SwiftUI (iOS 15+, macOS 12+) and Jetpack Compose (Android API 24+)
+    purpose: Contextual search ad rendered for a query string
+    parameters: [publisherID, publisherKey, query, geo]
+  - element: GistDisplayAdControl
+    platform: SwiftUI and Jetpack Compose
+    purpose: Display ad unit
+  implementation_note: >-
+    Both controls are WebView bridges: they build a bootstrap HTML page that loads the real
+    `adtag.js` bundle from the ad-tag host and calls
+    `window.prtag.defineSlot({id, api_key, url, geo}, slotId, sizes, adTypes)`. The SDK source
+    names three ad-tag environments — https://tp-at.staging.prorata.ai,
+    https://tp-at.integration.prorata.ai and https://tp-at.prorata.ai — overridable with the
+    GIST_ADS_STAGING_IFRAME_URL / GIST_ADS_INTEGRATION_IFRAME_URL /
+    GIST_ADS_PRODUCTION_IFRAME_URL environment variables.
+component_count: 4
