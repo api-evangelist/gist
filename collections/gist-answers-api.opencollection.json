@@ -1,0 +1,510 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Prorata API Service",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chat",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get attributions for a chat response",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/chat/attributions/:threadId/:turnId",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "threadId",
+                "value": "",
+                "type": "path",
+                "description": "Thread ID from your previous /v1/chat response"
+              },
+              {
+                "name": "turnId",
+                "value": "",
+                "type": "path",
+                "description": "Turn ID from your previous /v1/chat response"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\n**Important**: This endpoint is part of a sequential flow:\n1. First call `/v1/chat` to create a chat and get `threadId` and `turnId`\n2. Then get `/v1/chat/response/{threadId}/{turnId}` for the AI's response\n3. Finally use this endpoint to get attributions for that response\n\nReturns a list of attributions and source documents used in the response.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organ"
+        },
+        {
+          "info": {
+            "name": "Create a new chat",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gist.ai/v1/chat",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\nPlease click the \"Authorize\" button and enter your API key before testing.\n\nCreates a new chat thread or continues an existing one with the provided prompt.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organization's settings.\nThe response headers will include:\n- `X-RateLimit-Limit`: Maximum requests allowed in the current time window\n- `X-RateLimit-Remaining`: Number of requests remaining\n- `X-Ra"
+        },
+        {
+          "info": {
+            "name": "Get citations for a chat response",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/chat/citations/:threadId/:turnId",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "threadId",
+                "value": "",
+                "type": "path",
+                "description": "Thread ID from your previous /v1/chat response"
+              },
+              {
+                "name": "turnId",
+                "value": "",
+                "type": "path",
+                "description": "Turn ID from your previous /v1/chat response"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\n**Important**: This endpoint is part of a sequential flow:\n1. First call `/v1/chat` to create a chat and get `threadId` and `turnId`\n2. Then get `/v1/chat/response/{threadId}/{turnId}` for the AI's response\n3. Finally use this endpoint to get citations for that response\n\nReturns a list of citations and source documents used in the response.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organizatio"
+        },
+        {
+          "info": {
+            "name": "Stream AI completions (Experimental)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gist.ai/v1/chat/completions",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\nPlease click the \"Authorize\" button and enter your API key before testing.\n\nStreams AI-generated completions based on provided messages. (Experimental)\nEach generating event contains only the new content (delta) to append.\n\n**Conversation Handling**: To continue a conversation, include an assistant message with metadata from the previous response.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organ"
+        },
+        {
+          "info": {
+            "name": "Stream chat response",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/chat/response/:threadId/:turnId",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "threadId",
+                "value": "",
+                "type": "path",
+                "description": "Thread ID from your previous /v1/chat response"
+              },
+              {
+                "name": "turnId",
+                "value": "",
+                "type": "path",
+                "description": "Turn ID from your previous /v1/chat response"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\n**Important**: This endpoint is part of a sequential flow:\n1. First call `/v1/chat` to create a chat and get `threadId` and `turnId`\n2. Then use those IDs from the response to stream the AI's response\n3. Optionally fetch citations and attributions after\n\nThe response streams as Server-Sent Events (SSE) with a metadata event followed by\nmultiple generating events and a final complete event. Each generating event contains\nonly t"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get detailed service health status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/health"
+          },
+          "docs": "**Public Endpoint**: This endpoint is publicly accessible and does not require authentication.\nReturns detailed health status of the service and its dependencies.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Publishers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get publisher information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/publishers",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\nReturns information about the publisher group associated with your organization, including\nthe publisher group ID, name, description, and a list of publisher IDs.\n\n**Caching**: This endpoint uses Redis caching with a TTL of 1 hour.\n- First request fetches from the external service and caches the response\n- Subsequent requests within 1 hour return the cached data\n- Cache headers are included in the response\n"
+        },
+        {
+          "info": {
+            "name": "Get specific publisher details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/publishers/:id",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Publisher ID to retrieve details for"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\nReturns detailed information about a specific publisher identified by its ID. The publisher must be\npart of the publisher group associated with your organization.\n\n**Caching**: This endpoint uses Redis caching with a TTL of 1 hour.\n- First request fetches from the external service and caches the response\n- Subsequent requests within 1 hour return the cached data\n- Cache headers are included in the response\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Questions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get recommended questions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/questions/recommended",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "Number of questions to return"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\nReturns a list of recommended questions for users to ask.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organization's settings.\nThe response headers will include:\n- `X-RateLimit-Limit`: Maximum requests allowed in the current time window\n- `X-RateLimit-Remaining`: Number of requests remaining\n- `X-RateLimit-Reset`: Unix timestamp when the rate limit resets\n"
+        },
+        {
+          "info": {
+            "name": "Get related questions",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gist.ai/v1/questions/related",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\nReturns a list of questions related to the provided query.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organization's settings.\nThe response headers will include:\n- `X-RateLimit-Limit`: Maximum requests allowed in the current time window\n- `X-RateLimit-Remaining`: Number of requests remaining\n- `X-RateLimit-Reset`: Unix timestamp when the rate limit resets\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Root",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get service information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/"
+          },
+          "docs": "**Public Endpoint**: This endpoint is publicly accessible and does not require authentication.\nReturns basic service status.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Summaries",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create document summarization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gist.ai/v1/summaries",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key (public or secret).\n\nCreates a summarization request for the content found at the provided URL. The summary can be\ncustomized in terms of length, medium, and style.\n\n**Domain Validation**: The URL domain must exactly match one of the publisher domains associated with\nyour organization's publisher group. Subdomains are not automatically allowed - the exact domain must\nbe authorized. This ensures that you can only summarize conten"
+        },
+        {
+          "info": {
+            "name": "Stream a document summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/summaries/:summaryId",
+            "params": [
+              {
+                "name": "summaryId",
+                "value": "",
+                "type": "path",
+                "description": "The summaryId returned from the /v1/summaries endpoint"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key (public or secret).\n\nStreams the summary for a previously created summarization request.\nUse this with EventSource in browsers for easy streaming.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organization's settings.\nThe response headers will include:\n- `X-RateLimit-Limit`: Maximum requests allowed in the current time window\n- `X-RateLimit-Remaining`: Number of requests remaining\n- `X-RateLimit-Res"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Threads",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all chat threads (Advanced)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/threads",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "startAt",
+                "value": "",
+                "type": "query",
+                "description": "Starting index for pagination"
+              },
+              {
+                "name": "maxResults",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\nReturns a list of chat threads with optional pagination.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organization's settings.\nThe response headers will include:\n- `X-RateLimit-Limit`: Maximum requests allowed in the current time window\n- `X-RateLimit-Remaining`: Number of requests remaining\n- `X-RateLimit-Reset`: Unix timestamp when the rate limit resets\n"
+        },
+        {
+          "info": {
+            "name": "Get a specific thread (Advanced)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gist.ai/v1/threads/:threadId",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "threadId",
+                "value": "",
+                "type": "path",
+                "description": "Thread ID to retrieve"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\nReturns detailed information about a specific chat thread.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organization's settings.\nThe response headers will include:\n- `X-RateLimit-Limit`: Maximum requests allowed in the current time window\n- `X-RateLimit-Remaining`: Number of requests remaining\n- `X-RateLimit-Reset`: Unix timestamp when the rate limit resets\n"
+        },
+        {
+          "info": {
+            "name": "Delete a thread (Advanced)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.gist.ai/v1/threads/:threadId",
+            "headers": [
+              {
+                "name": "X-User-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "threadId",
+                "value": "",
+                "type": "path",
+                "description": "Thread ID to delete"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "**Authentication Required**: This endpoint requires a valid API key.\n\nPermanently deletes a chat thread and all its associated turns.\n\n**Rate Limiting**: This endpoint is subject to rate limiting based on your organization's settings.\nThe response headers will include:\n- `X-RateLimit-Limit`: Maximum requests allowed in the current time window\n- `X-RateLimit-Remaining`: Number of requests remaining\n- `X-RateLimit-Reset`: Unix timestamp when the rate limit resets\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

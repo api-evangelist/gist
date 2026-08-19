@@ -2,18 +2,32 @@ generated: '2026-08-12'
 method: derived
 status: candidate
 source: openapi/gist-answers-api-openapi.yml
-note: >-
-  Gist publishes NO MCP server. Every tool below is a candidate derived from a real operation in
-  the harvested OpenAPI — it is a proposal for what an agent surface over this API would look
-  like, not an observed tool list, and it must not be read as a shipped capability.
+note: Gist publishes NO MCP server. Every tool below is a candidate derived from a real operation in the
+  harvested OpenAPI — it is a proposal for what an agent surface over this API would look like, not an
+  observed tool list, and it must not be read as a shipped capability.
 search_result:
   official_hosted_server: none
   probes:
-  - {url: 'https://mcp.gist.ai', method: DNS, status: NXDOMAIN}
-  - {url: 'https://mcp.prorata.ai', method: DNS, status: NXDOMAIN}
-  - {url: 'https://api.gist.ai/mcp', method: 'POST tools/list', status: 502, note: gateway routes /v1/* only}
-  - {url: 'https://platform.gist.ai/llms.txt', method: GET, status: 200, note: real llms.txt, lists docs and API reference pages, names no MCP server}
-  registries_checked: [npm @modelcontextprotocol scope, docs search, llms.txt]
+  - url: https://mcp.gist.ai
+    method: DNS
+    status: NXDOMAIN
+  - url: https://mcp.prorata.ai
+    method: DNS
+    status: NXDOMAIN
+  - url: https://api.gist.ai/mcp
+    method: POST tools/list
+    status: 502
+    note: gateway routes /v1/* only
+  - url: https://platform.gist.ai/llms.txt
+    method: GET
+    status: 200
+    note: real llms.txt
+    lists docs and API reference pages: null
+    names no MCP server: null
+  registries_checked:
+  - npm @modelcontextprotocol scope
+  - docs search
+  - llms.txt
   third_party: []
 server:
   name: gist-answers
@@ -23,49 +37,55 @@ server:
 tools:
 - name: create_chat
   description: Ask a question against a publisher's licensed corpus and get thread_id + turn_id back.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#POST /v1/chat'
+  source_operation: openapi/gist-answers-api-openapi.yml#POST /v1/chat
 - name: stream_chat_response
   description: Stream the generated answer for a turn as Server-Sent Events.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/chat/response/{threadId}/{turnId}'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/chat/response/{threadId}/{turnId}
 - name: get_chat_citations
   description: List the source documents cited in an answer.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/chat/citations/{threadId}/{turnId}'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/chat/citations/{threadId}/{turnId}
 - name: get_chat_attributions
   description: Get the per-source credit distribution for an answer, by domain, document and publisher.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/chat/attributions/{threadId}/{turnId}'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/chat/attributions/{threadId}/{turnId}
 - name: stream_completions
   description: Stream an AI completion from a messages array (experimental).
-  source_operation: 'openapi/gist-answers-api-openapi.yml#POST /v1/chat/completions'
+  source_operation: openapi/gist-answers-api-openapi.yml#POST /v1/chat/completions
 - name: list_threads
   description: List chat threads with offset pagination.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/threads'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/threads
 - name: get_thread
   description: Get one thread with its turns.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/threads/{threadId}'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/threads/{threadId}
 - name: delete_thread
   description: Permanently delete a thread and all its turns.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#DELETE /v1/threads/{threadId}'
+  source_operation: openapi/gist-answers-api-openapi.yml#DELETE /v1/threads/{threadId}
   destructive: true
 - name: get_recommended_questions
   description: Get suggested questions to seed a search experience.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/questions/recommended'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/questions/recommended
 - name: get_related_questions
   description: Get follow-up questions related to a given turn and question.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#POST /v1/questions/related'
+  source_operation: openapi/gist-answers-api-openapi.yml#POST /v1/questions/related
 - name: get_publisher_group
   description: Get the publisher group attached to the calling organization.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/publishers'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/publishers
 - name: get_publisher
   description: Get details for one publisher in the group.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/publishers/{id}'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/publishers/{id}
 - name: summarize_url
   description: Create a summarization request for a URL on an authorized publisher domain.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#POST /v1/summaries'
+  source_operation: openapi/gist-answers-api-openapi.yml#POST /v1/summaries
 - name: stream_summary
   description: Stream a previously created summary.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/summaries/{summaryId}'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/summaries/{summaryId}
 - name: get_service_health
   description: Read the public per-dependency health status of the service.
-  source_operation: 'openapi/gist-answers-api-openapi.yml#GET /v1/health'
+  source_operation: openapi/gist-answers-api-openapi.yml#GET /v1/health
   public: true
 tool_count: 15
+deployment:
+  mode: none
+  verified: derived
+  tools: 15
+  checked: '2026-08-12'
+  source: catalog MCP census
