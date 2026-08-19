@@ -37,7 +37,7 @@ accessModel:
     API keys are issued at the Publisher Group level during onboarding — "API keys are provided
     during onboarding. Contact us if you need access." No self-serve signup and no published
     price list were found.
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-08-12'
 tags:
