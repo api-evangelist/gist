@@ -69,6 +69,16 @@ apis:
   humanURL: https://platform.gist.ai/docs/ga-overview
   baseURL: https://api.gist.ai
   tags:
+  - AI Search
+  - Answer Engine
+  - RAG
+  - Citations
+  - Attribution
+  - Streaming
+  - Server-Sent Events
+  - Summarization
+  - Publishers
+  tags_raw:
   - ai-search
   - answer-engine
   - rag
@@ -111,6 +121,11 @@ apis:
   humanURL: https://platform.gist.ai/docs/gist-content-api
   tags:
   - content-ingestion
+  - Publishers
+  - Content Licensing
+  - Syndication
+  tags_raw:
+  - content-ingestion
   - publishers
   - content-licensing
   - syndication
@@ -132,6 +147,12 @@ apis:
   humanURL: https://tp-at.prorata.ai/docs
   baseURL: https://tp-at.prorata.ai
   tags:
+  - Advertising
+  - ad-tag
+  - Ad Serving
+  - Contextual Advertising
+  - Monetization
+  tags_raw:
   - advertising
   - ad-tag
   - ad-serving
