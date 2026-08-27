@@ -58,66 +58,14 @@ tags:
 - Advertising Technology
 image: https://cdn.prod.website-files.com/69b4128468609a447fd7dd25/6a05c44830dff65379b10594_512x512.png
 apis:
-- name: Gist Answers API (Prorata API Service)
-  description: >-
-    REST API behind Gist Answers. Creates chats against a publisher's licensed corpus, streams the
-    answer back over Server-Sent Events, and returns the citations and the per-source attribution
-    credit distribution for each turn. Also covers thread management, recommended and related
-    question generation, publisher-group lookup and URL-scoped document summarization. Auth is an
-    API key sent as `Authorization: Bearer <key>`, with an `X-User-ID` header naming the calling
-    domain or organization on most operations.
-  humanURL: https://platform.gist.ai/docs/ga-overview
-  baseURL: https://api.gist.ai
-  tags:
-  - AI Search
-  - Answer Engine
-  - RAG
-  - Citations
-  - Attribution
-  - Streaming
-  - Server-Sent Events
-  - Summarization
-  - Publishers
-  tags_raw:
-  - ai-search
-  - answer-engine
-  - rag
-  - citations
-  - attribution
-  - streaming
-  - server-sent-events
-  - summarization
-  - publishers
-  properties:
-  - type: OpenAPI
-    url: openapi/gist-answers-api-openapi.yml
-  - type: Documentation
-    url: https://platform.gist.ai/docs/ga-overview
-  - type: APIReference
-    url: https://platform.gist.ai/reference/get_v1-health
-  - type: Authentication
-    url: authentication/gist-authentication.yml
-  - type: Conventions
-    url: conventions/gist-conventions.yml
-  - type: ErrorCatalog
-    url: errors/gist-problem-types.yml
-  - type: RateLimits
-    url: rate-limits/gist-rate-limits.yml
-  - type: DataModel
-    url: data-model/gist-data-model.yml
-  - type: Overlay
-    url: overlays/gist-answers-api-overlay.yaml
-  - type: ToolCrosswalk
-    url: mcp/gist-tool-crosswalk.yml
 - name: Gist Content API
   description: >-
-    Publisher ingest API for the Gist Content Network. Lets publisher partners push articles to
-    ProRata in real time (`POST /ingest/article`) or in bulk for archival backfill
-    (`POST /ingest/multiple_articles`), as an alternative to the ProRataInc crawler, CMS
-    integrations (WordPress, ArcXP, Strapi, Substack) or RSS feeds. Authenticated with a Publisher
-    Group API key sent as `Authorization: Bearer <key>`; default limit 10 requests per minute.
-    The documentation publishes the endpoint paths and payloads but does not publish the host, so
-    no baseURL is recorded here rather than guessed.
+    Publisher ingest API for the Gist Content Network. Lets publisher partners push articles to ProRata
+    in real time (`POST /ingest/article`) or in bulk for archival backfill (`POST /ingest/multiple_articles`),
+    as an alternative to the ProRataInc crawler, CMS integrations (WordPress, ArcXP, Strapi, Substack)
+    or RSS feeds. Authenticated with a Publisher Group API key sent as `Authorization: Bearer <key>`;
+    default limit 10 requests per minute. The documentation publishes the endpoint paths and payloads
+    but does not publish the host, so no baseURL is recorded here rather than guessed.
   humanURL: https://platform.gist.ai/docs/gist-content-api
   tags:
   - content-ingestion
@@ -138,12 +86,12 @@ apis:
     url: https://platform.gist.ai/docs/gcn-overview
 - name: Gist Ads Ad Tag and Display Ad API
   description: >-
-    Advertising delivery surface for Gist Ads. Publishers load the `adtag.js` bundle from
-    tp-at.prorata.ai and call `window.prtag.defineSlot({id, api_key, url, geo}, slotId, sizes,
-    adTypes)` to request contextual ads against a search query; the ad tag then calls the display
-    ad decision service (disp-api.prorata.ai, endpoints `/health`, `/decision`, `/api/v1/chat/`)
-    and the search ad service (tp-srch-api.prorata.ai, which requires Publisher-ID and
-    Publisher-Key headers). The same hosts back the first-party iOS and Android Gist Ads SDKs.
+    Advertising delivery surface for Gist Ads. Publishers load the `adtag.js` bundle from tp-at.prorata.ai
+    and call `window.prtag.defineSlot({id, api_key, url, geo}, slotId, sizes, adTypes)` to request contextual
+    ads against a search query; the ad tag then calls the display ad decision service (disp-api.prorata.ai,
+    endpoints `/health`, `/decision`, `/api/v1/chat/`) and the search ad service (tp-srch-api.prorata.ai,
+    which requires Publisher-ID and Publisher-Key headers). The same hosts back the first-party iOS and
+    Android Gist Ads SDKs.
   humanURL: https://tp-at.prorata.ai/docs
   baseURL: https://tp-at.prorata.ai
   tags:
@@ -165,6 +113,188 @@ apis:
     url: https://tp-at.prorata.ai/docs
   - type: SourceCode
     url: https://github.com/Prorata-ai/PrtAdsSDK
+- aid: gist:gist-chat-api
+  name: Gist Chat API
+  description: The Chat API from Gist — 5 operation(s) for chat.
+  humanURL: https://platform.gist.ai/docs/ga-overview
+  baseURL: https://api.gist.ai
+  tags:
+  - Chat
+  properties:
+  - type: OpenAPI
+    url: openapi/gist-chat-api-openapi.yml
+  - type: Documentation
+    url: https://platform.gist.ai/docs/ga-overview
+  - type: APIReference
+    url: https://platform.gist.ai/reference/get_v1-health
+  - type: Authentication
+    url: authentication/gist-authentication.yml
+  - type: Conventions
+    url: conventions/gist-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gist-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/gist-rate-limits.yml
+  - type: DataModel
+    url: data-model/gist-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/gist-tool-crosswalk.yml
+- aid: gist:gist-health-api
+  name: Gist Health API
+  description: The Health API from Gist — 1 operation(s) for health.
+  humanURL: https://platform.gist.ai/docs/ga-overview
+  baseURL: https://api.gist.ai
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/gist-health-api-openapi.yml
+  - type: Documentation
+    url: https://platform.gist.ai/docs/ga-overview
+  - type: APIReference
+    url: https://platform.gist.ai/reference/get_v1-health
+  - type: Authentication
+    url: authentication/gist-authentication.yml
+  - type: Conventions
+    url: conventions/gist-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gist-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/gist-rate-limits.yml
+  - type: DataModel
+    url: data-model/gist-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/gist-tool-crosswalk.yml
+- aid: gist:gist-publishers-api
+  name: Gist Publishers API
+  description: The Publishers API from Gist — 2 operation(s) for publishers.
+  humanURL: https://platform.gist.ai/docs/ga-overview
+  baseURL: https://api.gist.ai
+  tags:
+  - Publishers
+  properties:
+  - type: OpenAPI
+    url: openapi/gist-publishers-api-openapi.yml
+  - type: Documentation
+    url: https://platform.gist.ai/docs/ga-overview
+  - type: APIReference
+    url: https://platform.gist.ai/reference/get_v1-health
+  - type: Authentication
+    url: authentication/gist-authentication.yml
+  - type: Conventions
+    url: conventions/gist-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gist-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/gist-rate-limits.yml
+  - type: DataModel
+    url: data-model/gist-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/gist-tool-crosswalk.yml
+- aid: gist:gist-questions-api
+  name: Gist Questions API
+  description: The Questions API from Gist — 2 operation(s) for questions.
+  humanURL: https://platform.gist.ai/docs/ga-overview
+  baseURL: https://api.gist.ai
+  tags:
+  - Questions
+  properties:
+  - type: OpenAPI
+    url: openapi/gist-questions-api-openapi.yml
+  - type: Documentation
+    url: https://platform.gist.ai/docs/ga-overview
+  - type: APIReference
+    url: https://platform.gist.ai/reference/get_v1-health
+  - type: Authentication
+    url: authentication/gist-authentication.yml
+  - type: Conventions
+    url: conventions/gist-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gist-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/gist-rate-limits.yml
+  - type: DataModel
+    url: data-model/gist-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/gist-tool-crosswalk.yml
+- aid: gist:gist-root-api
+  name: Gist Root API
+  description: The Root API from Gist — 1 operation(s) for root.
+  humanURL: https://platform.gist.ai/docs/ga-overview
+  baseURL: https://api.gist.ai
+  tags:
+  - Root
+  properties:
+  - type: OpenAPI
+    url: openapi/gist-root-api-openapi.yml
+  - type: Documentation
+    url: https://platform.gist.ai/docs/ga-overview
+  - type: APIReference
+    url: https://platform.gist.ai/reference/get_v1-health
+  - type: Authentication
+    url: authentication/gist-authentication.yml
+  - type: Conventions
+    url: conventions/gist-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gist-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/gist-rate-limits.yml
+  - type: DataModel
+    url: data-model/gist-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/gist-tool-crosswalk.yml
+- aid: gist:gist-summaries-api
+  name: Gist Summaries API
+  description: The Summaries API from Gist — 2 operation(s) for summaries.
+  humanURL: https://platform.gist.ai/docs/ga-overview
+  baseURL: https://api.gist.ai
+  tags:
+  - Summaries
+  properties:
+  - type: OpenAPI
+    url: openapi/gist-summaries-api-openapi.yml
+  - type: Documentation
+    url: https://platform.gist.ai/docs/ga-overview
+  - type: APIReference
+    url: https://platform.gist.ai/reference/get_v1-health
+  - type: Authentication
+    url: authentication/gist-authentication.yml
+  - type: Conventions
+    url: conventions/gist-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gist-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/gist-rate-limits.yml
+  - type: DataModel
+    url: data-model/gist-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/gist-tool-crosswalk.yml
+- aid: gist:gist-threads-api
+  name: Gist Threads API
+  description: The Threads API from Gist — 2 operation(s) for threads.
+  humanURL: https://platform.gist.ai/docs/ga-overview
+  baseURL: https://api.gist.ai
+  tags:
+  - Threads
+  properties:
+  - type: OpenAPI
+    url: openapi/gist-threads-api-openapi.yml
+  - type: Documentation
+    url: https://platform.gist.ai/docs/ga-overview
+  - type: APIReference
+    url: https://platform.gist.ai/reference/get_v1-health
+  - type: Authentication
+    url: authentication/gist-authentication.yml
+  - type: Conventions
+    url: conventions/gist-conventions.yml
+  - type: ErrorCatalog
+    url: errors/gist-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/gist-rate-limits.yml
+  - type: DataModel
+    url: data-model/gist-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/gist-tool-crosswalk.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
