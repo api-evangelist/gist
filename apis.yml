@@ -84,9 +84,9 @@ apis:
   humanURL: https://platform.gist.ai/docs/gist-content-api
   tags:
   - content-ingestion
-  - Publishers
-  - Content Licensing
-  - Syndication
+  - publishers
+  - content-licensing
+  - syndication
   tags_raw:
   - content-ingestion
   - publishers
@@ -112,9 +112,9 @@ apis:
   tags:
   - Advertising
   - ad-tag
-  - Ad Serving
-  - Contextual Advertising
-  - Monetization
+  - ad-serving
+  - contextual-advertising
+  - monetization
   tags_raw:
   - advertising
   - ad-tag
@@ -264,6 +264,8 @@ apis:
   humanURL: https://platform.gist.ai/docs/ga-overview
   baseURL: https://api.gist.ai
   tags:
+  - Summary
+  tags_raw:
   - Summaries
   properties:
   - type: OpenAPI
