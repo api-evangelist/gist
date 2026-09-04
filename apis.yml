@@ -368,8 +368,9 @@ common:
   url: data-model/gist-data-model.yml
 - type: JSONSchema
   url: json-schema/gist-attribution-extension.json
-- type: MCPServer
+- type: X-MCPServerCandidate
   url: mcp/gist-mcp.yml
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
 - type: ToolCrosswalk
   url: mcp/gist-tool-crosswalk.yml
 - type: AgentSkill
