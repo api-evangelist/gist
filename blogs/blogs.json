@@ -2,20 +2,20 @@
   "repo": "gist",
   "feeds": [
     {
-      "source": "https://gist.ai",
-      "feed_url": "https://gist.ai",
+      "source": "https://platform.gist.ai/docs/quick-start-using-widgets",
+      "feed_url": "https://platform.gist.ai/docs/quick-start-using-widgets",
       "title": "",
       "saved": 0,
       "method": "none"
     },
     {
-      "source": "https://platform.gist.ai/docs/quick-start-using-widgets",
-      "feed_url": "https://platform.gist.ai/docs/quick-start-using-widgets",
+      "source": "https://gist.ai",
+      "feed_url": "https://gist.ai",
       "title": "",
       "saved": 0,
       "method": "none"
     }
   ],
   "post_count": 0,
-  "fetched": "2026-08-30T22:33:40Z"
+  "fetched": "2026-09-06T19:17:18Z"
 }
