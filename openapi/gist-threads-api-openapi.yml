@@ -4,8 +4,8 @@ info:
   version: 1.0.0
   description: API for chat, threads, questions, and publisher management
 servers:
-- url: https://api.gist.ai
-  description: 'Gist / ProRata API production (verified: GET https://api.gist.ai/v1/health -> 200 application/json)'
+- url: /v1
+  description: API v1
 tags:
 - name: Threads
 paths:
@@ -26,9 +26,7 @@ paths:
 
         - `X-RateLimit-Remaining`: Number of requests remaining
 
-        - `X-RateLimit-Reset`: Unix timestamp when the rate limit resets
-
-        '
+        - `X-RateLimit-Reset`: Unix timestamp when the rate limit resets'
       tags:
       - Threads
       security:
@@ -125,6 +123,8 @@ paths:
                     example: 429
         '500':
           description: Internal server error
+      operationId: getV1Threads
+      x-operation-id-source: derived
   /v1/threads/{threadId}:
     get:
       summary: Get a specific thread (Advanced)
@@ -142,9 +142,7 @@ paths:
 
         - `X-RateLimit-Remaining`: Number of requests remaining
 
-        - `X-RateLimit-Reset`: Unix timestamp when the rate limit resets
-
-        '
+        - `X-RateLimit-Reset`: Unix timestamp when the rate limit resets'
       tags:
       - Threads
       security:
@@ -238,6 +236,8 @@ paths:
                     example: 429
         '500':
           description: Internal server error
+      operationId: getV1ThreadsByThreadId
+      x-operation-id-source: derived
     delete:
       summary: Delete a thread (Advanced)
       description: '**Authentication Required**: This endpoint requires a valid API key.
@@ -254,9 +254,7 @@ paths:
 
         - `X-RateLimit-Remaining`: Number of requests remaining
 
-        - `X-RateLimit-Reset`: Unix timestamp when the rate limit resets
-
-        '
+        - `X-RateLimit-Reset`: Unix timestamp when the rate limit resets'
       tags:
       - Threads
       security:
@@ -313,18 +311,20 @@ paths:
                     example: 429
         '500':
           description: Internal server error
+      operationId: deleteV1ThreadsByThreadId
+      x-operation-id-source: derived
 components:
   headers:
     X-RateLimit-Limit:
       description: Maximum requests allowed in the current time window
       schema:
         type: integer
-    X-RateLimit-Remaining:
-      description: Number of requests remaining in the current time window
-      schema:
-        type: integer
     X-RateLimit-Reset:
       description: Unix timestamp when the rate limit resets
+      schema:
+        type: integer
+    X-RateLimit-Remaining:
+      description: Number of requests remaining in the current time window
       schema:
         type: integer
   securitySchemes:

@@ -1,0 +1,41 @@
+{
+  "provider": "gist",
+  "sources": [
+    "_original/gist-answers-api-openapi.json"
+  ],
+  "outputs": [
+    "gist-chat-api-openapi.yml",
+    "gist-health-api-openapi.yml",
+    "gist-publishers-api-openapi.yml",
+    "gist-questions-api-openapi.yml",
+    "gist-root-api-openapi.yml",
+    "gist-summaries-api-openapi.yml",
+    "gist-threads-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "gist-answers-api-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "gist-answers-api-openapi.json: declared missing tag: Chat",
+    "gist-answers-api-openapi.json: declared missing tag: Health",
+    "gist-answers-api-openapi.json: declared missing tag: Publishers",
+    "gist-answers-api-openapi.json: declared missing tag: Questions",
+    "gist-answers-api-openapi.json: declared missing tag: Root",
+    "gist-answers-api-openapi.json: declared missing tag: Summaries",
+    "gist-answers-api-openapi.json: declared missing tag: Threads",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/gist-answers-api-openapi.yml: archived document superseded by a larger archived document",
+    "gist-chat-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gist-health-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gist-publishers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gist-questions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gist-root-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gist-summaries-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "gist-threads-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

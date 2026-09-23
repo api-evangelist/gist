@@ -4,8 +4,8 @@ info:
   version: 1.0.0
   description: API for chat, threads, questions, and publisher management
 servers:
-- url: https://api.gist.ai
-  description: 'Gist / ProRata API production (verified: GET https://api.gist.ai/v1/health -> 200 application/json)'
+- url: /v1
+  description: API v1
 tags:
 - name: Root
 paths:
@@ -16,9 +16,7 @@ paths:
       summary: Get service information
       description: '**Public Endpoint**: This endpoint is publicly accessible and does not require authentication.
 
-        Returns basic service status.
-
-        '
+        Returns basic service status.'
       responses:
         '200':
           description: Basic service status
@@ -32,6 +30,8 @@ paths:
                     enum:
                     - ok
                     example: ok
+      operationId: getRoot
+      x-operation-id-source: derived
 components:
   securitySchemes:
     apiKeyAuth:
