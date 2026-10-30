@@ -64,28 +64,140 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Gist is an AI brand-visibility, answer-engine and content-monetization platform built by ProRata.
-It ships Gist GEO, Gist Ads and Gist Answers, and it has a real, public developer surface behind
-them at the [Gist Developer Hub](https://platform.gist.ai/docs/about-gist-services).
+Gist is an AI brand-visibility, answer-engine and content-monetization platform built by ProRata (founded 2024) that helps publishers and advertisers stay visible, measurable and monetizable inside generative AI experiences. It ships three products: Gist GEO (generative engine optimization for consistent organic visibility in AI answers), Gist Ads (paid brand amplification placed directly in AI search surfaces, with native iOS and Android ad SDKs and a publisher ad tag), and Gist Answers (an embeddable, publisher-backed AI answer engine for on-site engagement and monetization). Behind those products sits a real developer surface documented at the Gist Developer Hub: the Prorata API Service (chat, streaming completions, citations, per-source attribution, threads, recommended and related questions, publisher management and document summarization) at api.gist.ai, the Gist Content API for publisher article ingestion, the Gist Content Network crawler and CMS/RSS ingestion paths, and the gist-chat-widget web component distributed from cdn.gist.ai. Gist positions itself as turning AI from a black box into a measurable, actionable channel for brands and content owners, with fair attribution and a 50/50 publisher revenue share as the stated basis of the model.
 
-What this profile holds, all harvested from public URLs on 2026-08-12:
+**Areas:** Company · Artificial Intelligence · Generative AI · Advertising · Marketing · Brand Visibility · Publishers · Search · Content · Answer Engine · Attribution · Content Licensing
 
-- **OpenAPI** for the Gist Answers API ("Prorata API Service") — 16 operations covering chat,
-  streaming completions, citations, per-source attribution, threads, questions, publishers and
-  URL summarization. Verbatim copy in `openapi/_original/`; the working copy carries a repaired
-  `servers` block (the published one is the relative string `/v1`, which names no host) and the
-  repair is recorded in `overlays/`.
-- **llms.txt** served by the provider at `platform.gist.ai/llms.txt`, saved verbatim in `llms/`.
-- **JSON Schemas** from ProRata's proposed fractional-attribution extension to the Content
-  Telemetry standard, in `json-schema/`.
-- **Packages** — the first-party Gist Ads SDKs for iOS/macOS (Swift Package Manager) and Android
-  (JitPack), plus the unpinned CDN web component, with their real currency recorded.
-- Derived and searched artifacts for authentication, conventions, errors, rate limits, plans,
-  lifecycle, conformance, the data model, components, sandbox environments, a candidate MCP tool
-  set with its crosswalk, and four packaged Agent Skills.
-- Verified absences: no `/.well-known/` document on any host, no agent card, no MCP server, no
-  status page, no changelog, no published pricing, no trust center. See
-  `well-known/gist-well-known.yml`, `lifecycle/gist-lifecycle.yml` and
-  `conformance/gist-conformance.yml`.
+## Gist on APIs.io
 
-Backed by: mayfield — https://gist.ai
+Everything profiled for Gist is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/gist/](https://apis.io/providers/gist/)** — or go straight to one of the APIs or properties below.
+
+### APIs (9)
+
+- [Gist Content API](https://apis.io/apis/gist/gist-content-api/) — Publisher ingest API for the Gist Content Network. Lets publisher partners push articles to ProRata in real time (`POST /ingest/article`) or in bulk for…
+- [Gist Ads Ad Tag and Display Ad API](https://apis.io/apis/gist/gist-ads-ad-tag-and-display-ad-api/) — Advertising delivery surface for Gist Ads. Publishers load the `adtag.js` bundle from tp-at.prorata.ai and call `window.prtag.defineSlot({id, api_key, url,…
+- [Gist Chat API](https://apis.io/apis/gist/gist-chat-api/) — The Chat API from Gist — 5 operation(s) for chat.
+- [Gist Health API](https://apis.io/apis/gist/gist-health-api/) — The Health API from Gist — 1 operation(s) for health.
+- [Gist Publishers API](https://apis.io/apis/gist/gist-publishers-api/) — The Publishers API from Gist — 2 operation(s) for publishers.
+- [Gist Questions API](https://apis.io/apis/gist/gist-questions-api/) — The Questions API from Gist — 2 operation(s) for questions.
+- [Gist Root API](https://apis.io/apis/gist/gist-root-api/) — The Root API from Gist — 1 operation(s) for root.
+- [Gist Summaries API](https://apis.io/apis/gist/gist-summaries-api/) — The Summaries API from Gist — 2 operation(s) for summaries.
+- [Gist Threads API](https://apis.io/apis/gist/gist-threads-api/) — The Threads API from Gist — 2 operation(s) for threads.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [gist-answers](https://apis.io/servers/gist/gist-answers/)
+
+#### JSON Schema (3)
+
+The data models the API reads and writes.
+
+- [Fractional Attribution Extension - definitions](https://apis.io/schemas/gist/gist-attribution-extension/)
+- [Fractional Attribution Standalone Report](https://apis.io/schemas/gist/gist-attribution-report/)
+- [Content Telemetry Session with Fractional Attribution (strict)](https://apis.io/schemas/gist/gist-attribution-session-strict/)
+
+#### Collections (1)
+
+Postman and Open Collection request collections.
+
+- [Prorata API Service](https://apis.io/collections/gist/open-gist-answers-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Gist Answers Api Overlay](https://apis.io/overlays/gist/gist-answers-api-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Gist Authentication](https://apis.io/security/gist/gist-authentication/)
+- [Gist Domain Security](https://apis.io/security/gist/gist-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Gist Plans Pricing](https://apis.io/plans/gist/gist-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Gist Rate Limits](https://apis.io/rate-limits/gist/gist-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://gist.ai)
+- [Documentation](https://platform.gist.ai/docs/about-gist-services)
+- [Getting started](https://platform.gist.ai/docs/quick-start-using-widgets)
+- [API reference](https://platform.gist.ai/reference/get_v1-health)
+- [Support](https://gist.ai/contact)
+- [Blog](https://gist.ai/get-the-gist)
+- [Terms of service](https://gist.ai/terms-of-use)
+- [Privacy policy](https://gist.ai/privacy-policy)
+- [GitHub](https://github.com/Prorata-ai)
+
+## API Evangelist rating
+
+**Kin Score 39.5** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 64.3 |
+| Contract quality | 45.6 |
+| Contract governance | 4.5 |
+| Operational transparency | 23.7 |
+| Developer ergonomics | 62.5 |
+| Access clarity | 27.6 |
+
+**Agent readiness 27.7** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | verified |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 22.7** — AI & Biometrics
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/gist/](https://apis.io/providers/gist/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Gist: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/gist/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
